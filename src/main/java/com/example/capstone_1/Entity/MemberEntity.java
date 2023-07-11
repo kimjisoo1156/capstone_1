@@ -1,6 +1,7 @@
 package com.example.capstone_1.Entity;
 
 
+import com.example.capstone_1.Dto.SignUpDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Entity(name="Member")
-public class MemberEnity {
+public class MemberEntity {
     @Id
     @Column(name="member_email")
     private String memberEmail;
@@ -34,5 +35,14 @@ public class MemberEnity {
     @Column(name="member_role")
     private Role memberRole;
 
+    public MemberEntity(SignUpDto dto){  //post 맨에서 값 입력한대로 필드 초기화 하는부분.
+        this.memberEmail = dto.getMemberEmail();
+        this.memberPassword = dto.getMemberPassword();
+        this.memberPhoneNumber = dto.getMemberPhoneNumber();
+        this.memberName = dto.getMemberName();
+        this.memberBankName = dto.getMemberBankName();
+        this.memberAccount = dto.getMemberAccount();
+        this.memberRole = Role.USER; //회원가입은 모두 USER로
+    }
 
 }
