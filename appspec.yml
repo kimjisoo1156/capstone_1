@@ -1,18 +1,26 @@
 version: 0.0
 os: linux
+
+# 배포 파일에 대한 설정
 files:
-  - source: /
-    destination: /home/ubuntu/app/
-    overwrite: yes
+  - source:  / # 인스턴스에 복사할 디렉토리 경로
+    destination: /home/ubuntu/app # 인스턴스에서 파일이 복사되는 위치
+    overwrite: yes # 복사할 위치에 파일이 있는 경우 대체
 
+# files 섹션에서 복사한 파일에 대한 권한 설정
 permissions:
-  - object: /
-    pattern: "**"
-    owner: ubuntu
-    group: ubuntu
+  - object: / # 권한이 지정되는 파일 또는 디렉토리
+    pattern: "**" # 매칭되는 패턴에만 권한 부여
+    owner: ubuntu # object의 소유자
+    group: ubuntu # object의 그룹이름
 
+# 배포 이후에 수행할 스크립트 지정
 hooks:
-  ApplicationStart:
-    - location: deploy.sh
+  AfterInstall: # 기존에 실행 중이던 애플리케이션 종료
+    - location: scripts/stop.sh # hooks에서 실행할 스크립트 위치
+      timeout: 60 # 스크립트 실행에 허용되는 최대 시간, 넘으면 배포 실패로 간주
+      runas: ubuntu # 스크립트를 실행하는 사용자
+  ApplicationStart: # 새로운 애플리케이션 시작
+    - location: scripts/start.sh
       timeout: 60
       runas: ubuntu
