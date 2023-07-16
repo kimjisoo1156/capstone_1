@@ -29,14 +29,14 @@ public class AuthService {
 
         try{
             if (memberRepository.existsById(memberEmail))
-                return ResponseDto.setFailed("Existed Email!");
+                return ResponseDto.setFailed("Existed Email!");  //아이디 중복체크
         }catch (Exception e){
             return ResponseDto.setFailed("Data Base Error!");
         }
 
 
         //비밀번호가 서로 다른면 failed response 반환!
-        if (!memberPassword.equals(memberPasswordCheck))
+        if (!memberPassword.equals(memberPasswordCheck)) //비밀번호와 비밀번호확인 서로 다르면 나오는 에러
             return ResponseDto.setFailed("Password does not matched");
 
         //UserEntity 생성
