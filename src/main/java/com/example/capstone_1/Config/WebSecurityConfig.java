@@ -37,7 +37,11 @@ public class WebSecurityConfig {
                                 .anyRequest().authenticated())    //나머지 요청들 권한 종류에 상관없이 권한이 있어야 접근 가능
 
                 .logout(logout -> logout.permitAll()
+                        .logoutUrl("/logout")
+                        //.logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
                         .logoutSuccessHandler((request, response, authentication) -> {
+                            response.sendRedirect("/login");
                             response.setStatus(HttpServletResponse.SC_OK);
                         }));
 
