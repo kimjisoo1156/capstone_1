@@ -56,11 +56,12 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/boards/list", "/api/boards/search","/board/**").permitAll()
+                        .requestMatchers("/boards/list", "/boards/search","/board/**").permitAll()
 
                         .requestMatchers("/api/boards/register").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/api/boards/modify/{bno}").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/api/boards/remove/{bno}").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/css/**","/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
