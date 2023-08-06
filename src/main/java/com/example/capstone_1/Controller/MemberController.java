@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
-public class MemberController {
+public class MemberController { //비밀번호 찾기
+
     private final MemberService memberService;
 
 //    @GetMapping("/me")
@@ -19,8 +20,8 @@ public class MemberController {
 //        return ResponseEntity.ok(memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId()));
 //    }
 
-    @GetMapping("/{email}")
-    public ResponseEntity<MemberResponseDto> findMemberInfoByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(memberService.findMemberInfoByEmail(email));
-    }
+//    @GetMapping("/{email}")
+//    public ResponseEntity<MemberResponseDto> findMemberInfoByEmail(@PathVariable String email) {
+//        return ResponseEntity.ok(memberService.findMemberInfoByEmail(email));
+//    }
 }

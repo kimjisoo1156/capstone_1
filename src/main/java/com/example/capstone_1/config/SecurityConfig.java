@@ -60,7 +60,7 @@ public class SecurityConfig {
                         .requestMatchers("/boards/register","/upload").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/boards/modify/{bno}","/view/{fileName}").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/boards/remove/{bno}","/remove/{fileName}","/replies/**").hasAnyRole("USER","ADMIN")
-
+                        .requestMatchers("/hello").permitAll()
                         .requestMatchers("/css/**","/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
