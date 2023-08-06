@@ -57,10 +57,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/boards/list", "/boards/search","/board/**").permitAll()
+                        .requestMatchers("/boards/register","/upload").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/boards/modify/{bno}","/view/{fileName}").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/boards/remove/{bno}","/remove/{fileName}","/replies/**").hasAnyRole("USER","ADMIN")
 
-                        .requestMatchers("/api/boards/register").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/api/boards/modify/{bno}").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/api/boards/remove/{bno}").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/css/**","/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
