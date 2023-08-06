@@ -8,12 +8,12 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello(){
-        return "Hi";
+        return "Hi Hi";
     }
 
     @GetMapping("/")
     public String jisoo(){
-        return "제발요";
+        return "제발요!!!!";
     }
 
 }
