@@ -1,4 +1,4 @@
-package org.zerock.b01.dto;
+package com.example.capstone_1.dto;
 
 
 import lombok.AllArgsConstructor;

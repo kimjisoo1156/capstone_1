@@ -1,7 +1,7 @@
-package org.zerock.b01.repository;
+package com.example.capstone_1.repository;
 
+import com.example.capstone_1.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.zerock.b01.domain.Member;
 
 import java.util.Optional;
 

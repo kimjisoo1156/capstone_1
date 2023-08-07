@@ -1,5 +1,7 @@
 package com.example.capstone_1.controller;
 
+import com.example.capstone_1.dto.*;
+import com.example.capstone_1.service.*;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,21 +14,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.b01.dto.*;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.validation.ObjectError;
-import org.zerock.b01.service.*;
 
 @RestController
 @Log4j2
 @RequestMapping("/boards")
 public class BoardController_front {
 
-    @Value("${org.zerock.upload.path}")// import 시에 springframework으로 시작하는 Value
+    @Value("${com.example.upload.path}")// import 시에 springframework으로 시작하는 Value
     private String uploadPath;
 
     private final FreeBoardService freeBoardService;

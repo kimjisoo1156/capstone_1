@@ -1,7 +1,6 @@
-package org.zerock.b01.service;
+package com.example.capstone_1.service;
 
-import org.zerock.b01.domain.BankReply;
-import org.zerock.b01.dto.ReplyDTO;
+import com.example.capstone_1.dto.ReplyDTO;
 
 import java.util.List;
 

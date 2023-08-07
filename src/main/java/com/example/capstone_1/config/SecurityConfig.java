@@ -1,5 +1,8 @@
 package com.example.capstone_1.config;
 
+import com.example.capstone_1.jwt.JwtAccessDeniedHandler;
+import com.example.capstone_1.jwt.JwtAuthenticationEntryPoint;
+import com.example.capstone_1.jwt.TokenProvider;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import org.springframework.web.filter.CorsFilter;
-import org.zerock.b01.jwt.JwtAccessDeniedHandler;
-import org.zerock.b01.jwt.JwtAuthenticationEntryPoint;
-import org.zerock.b01.jwt.TokenProvider;
 
 @EnableWebSecurity
 @EnableMethodSecurity

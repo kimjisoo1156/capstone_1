@@ -1,5 +1,8 @@
-package org.zerock.b01.service;
+package com.example.capstone_1.service;
 
+import com.example.capstone_1.domain.ReportBoard;
+import com.example.capstone_1.dto.*;
+import com.example.capstone_1.repository.ReportBoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -7,10 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zerock.b01.domain.ReportBoard;
-import org.zerock.b01.dto.*;
-import org.zerock.b01.repository.ReportBoardRepository;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

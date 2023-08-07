@@ -1,4 +1,4 @@
-package org.zerock.b01.service;
+package com.example.capstone_1.service;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,5 +1,10 @@
-package org.zerock.b01.service;
+package com.example.capstone_1.service;
 
+import com.example.capstone_1.domain.FreeReply;
+import com.example.capstone_1.dto.PageRequestDTO;
+import com.example.capstone_1.dto.PageResponseDTO;
+import com.example.capstone_1.dto.ReplyDTO;
+import com.example.capstone_1.repository.FreeReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -9,11 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zerock.b01.domain.FreeReply;
-import org.zerock.b01.dto.PageRequestDTO;
-import org.zerock.b01.dto.PageResponseDTO;
-import org.zerock.b01.dto.ReplyDTO;
-import org.zerock.b01.repository.FreeReplyRepository;
 
 import java.util.List;
 import java.util.Optional;

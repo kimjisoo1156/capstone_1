@@ -1,5 +1,11 @@
-package org.zerock.b01.repository.search;
+package com.example.capstone_1.repository.search;
 
+import com.example.capstone_1.domain.FreeBoard;
+import com.example.capstone_1.domain.QFreeBoard;
+import com.example.capstone_1.domain.QFreeReply;
+import com.example.capstone_1.dto.BoardImageDTO;
+import com.example.capstone_1.dto.BoardListAllDTO;
+import com.example.capstone_1.dto.BoardListReplyCountDTO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -8,12 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.zerock.b01.domain.FreeBoard;
-import org.zerock.b01.domain.QFreeBoard;
-import org.zerock.b01.domain.QFreeReply;
-import org.zerock.b01.dto.BoardImageDTO;
-import org.zerock.b01.dto.BoardListAllDTO;
-import org.zerock.b01.dto.BoardListReplyCountDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;

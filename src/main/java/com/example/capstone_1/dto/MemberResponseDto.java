@@ -1,9 +1,9 @@
-package org.zerock.b01.dto;
+package com.example.capstone_1.dto;
 
+import com.example.capstone_1.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.zerock.b01.domain.Member;
 
 @Getter
 @AllArgsConstructor

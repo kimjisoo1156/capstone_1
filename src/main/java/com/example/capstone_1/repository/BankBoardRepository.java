@@ -1,10 +1,10 @@
-package org.zerock.b01.repository;
+package com.example.capstone_1.repository;
 
+import com.example.capstone_1.domain.BankBoard;
+import com.example.capstone_1.repository.search.BankBoardSearch;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.zerock.b01.domain.BankBoard;
-import org.zerock.b01.repository.search.BankBoardSearch;
 
 import java.util.Optional;
 

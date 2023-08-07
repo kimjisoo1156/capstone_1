@@ -1,10 +1,9 @@
-package org.zerock.b01.service;
+package com.example.capstone_1.service;
 
 
-import org.zerock.b01.domain.BankBoard;
-import org.zerock.b01.domain.NoticeBoard;
-import org.zerock.b01.dto.BankBoardDTO;
-import org.zerock.b01.dto.BoardDTO;
+
+import com.example.capstone_1.domain.NoticeBoard;
+import com.example.capstone_1.dto.BoardDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;

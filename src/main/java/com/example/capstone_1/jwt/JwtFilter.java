@@ -1,4 +1,4 @@
-package org.zerock.b01.jwt;
+package com.example.capstone_1.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

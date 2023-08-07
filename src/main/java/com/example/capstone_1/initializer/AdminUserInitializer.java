@@ -1,13 +1,13 @@
-package org.zerock.b01.initializer;
+package com.example.capstone_1.initializer;
 
+import com.example.capstone_1.domain.Authority;
+import com.example.capstone_1.domain.Member;
+import com.example.capstone_1.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.zerock.b01.domain.Authority;
-import org.zerock.b01.domain.Member;
-import org.zerock.b01.repository.MemberRepository;
 
 @Component
 @RequiredArgsConstructor   //프로젝트 시작시 관리자 회원 db에 값 박아 놓기.

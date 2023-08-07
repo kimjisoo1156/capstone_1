@@ -1,13 +1,12 @@
-package org.zerock.b01.dto;
+package com.example.capstone_1.dto;
 
+import com.example.capstone_1.domain.Authority;
+import com.example.capstone_1.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.zerock.b01.domain.Authority;
-import org.zerock.b01.domain.Member;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

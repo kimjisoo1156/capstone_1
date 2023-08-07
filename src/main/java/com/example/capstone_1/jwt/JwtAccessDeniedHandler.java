@@ -1,4 +1,4 @@
-package org.zerock.b01.jwt;
+package com.example.capstone_1.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

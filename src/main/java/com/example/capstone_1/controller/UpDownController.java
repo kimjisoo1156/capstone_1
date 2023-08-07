@@ -1,6 +1,8 @@
+package com.example.capstone_1.controller;
 
 
-
+import com.example.capstone_1.dto.UploadFileDTO;
+import com.example.capstone_1.dto.UploadResultDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,8 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.b01.dto.UploadFileDTO;
-import org.zerock.b01.dto.UploadResultDTO;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.util.*;
 @Log4j2
 public class UpDownController {
 
-    @Value("${org.zerock.upload.path}")// import 시에 springframework으로 시작하는 Value
+    @Value("${com.example.upload.path}")// import 시에 springframework으로 시작하는 Value
     private String uploadPath;
 
     @Operation(summary =  "POST 방식으로 파일 등록")

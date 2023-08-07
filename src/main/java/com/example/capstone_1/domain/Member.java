@@ -1,4 +1,4 @@
-package org.zerock.b01.domain;
+package com.example.capstone_1.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
