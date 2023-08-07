@@ -1,10 +1,7 @@
-package org.zerock.b01.service;
+package com.example.capstone_1.service;
 
-import org.zerock.b01.domain.FreeBoard;
-import org.zerock.b01.dto.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.example.capstone_1.dto.*;
 
 public interface BoardService {
 

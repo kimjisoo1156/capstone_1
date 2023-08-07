@@ -1,15 +1,13 @@
 package com.example.capstone_1.controller;
 
+import com.example.capstone_1.dto.MemberResponseDto;
+import com.example.capstone_1.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.b01.dto.MemberResponseDto;
-import org.zerock.b01.service.MemberService;
-import org.zerock.b01.utill.SecurityUtil;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")

@@ -1,6 +1,11 @@
 package com.example.capstone_1.controller;
 
 
+import com.example.capstone_1.dto.BoardDTO;
+import com.example.capstone_1.dto.BoardListAllDTO;
+import com.example.capstone_1.dto.PageRequestDTO;
+import com.example.capstone_1.dto.PageResponseDTO;
+import com.example.capstone_1.service.FreeBoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
-import org.zerock.b01.service.FreeBoardService;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -25,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
 
-    @Value("${org.zerock.upload.path}")// import 시에 springframework으로 시작하는 Value
+    @Value("${com.example.upload.path}")// import 시에 springframework으로 시작하는 Value
     private String uploadPath;
 
     private final FreeBoardService freeBoardService;

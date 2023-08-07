@@ -1,4 +1,4 @@
-package org.zerock.b01.domain;
+package com.example.capstone_1.domain;
 
 import lombok.*;
 import org.hibernate.annotations.BatchSize;

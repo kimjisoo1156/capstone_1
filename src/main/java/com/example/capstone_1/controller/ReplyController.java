@@ -1,6 +1,10 @@
 package com.example.capstone_1.controller;
 
 
+import com.example.capstone_1.dto.PageRequestDTO;
+import com.example.capstone_1.dto.PageResponseDTO;
+import com.example.capstone_1.dto.ReplyDTO;
+import com.example.capstone_1.service.ReplyService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,11 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.b01.domain.BankReply;
-import org.zerock.b01.dto.PageRequestDTO;
-import org.zerock.b01.dto.PageResponseDTO;
-import org.zerock.b01.dto.ReplyDTO;
-import org.zerock.b01.service.ReplyService;
 
 import jakarta.validation.Valid;
 import java.util.HashMap;
@@ -167,7 +166,7 @@ public class ReplyController {
     @Operation(summary = "Replies of Board")
     @GetMapping(value = "/report/list/{bno}")
     public PageResponseDTO<ReplyDTO> ReportGetList(@PathVariable("bno") Long bno,
-                                                 PageRequestDTO pageRequestDTO){
+                                                   PageRequestDTO pageRequestDTO){
 
         PageResponseDTO<ReplyDTO> responseDTO = reportReplyService.getListOfBoard(bno, pageRequestDTO);
 

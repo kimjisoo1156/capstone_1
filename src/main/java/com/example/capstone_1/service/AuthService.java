@@ -1,5 +1,11 @@
-package org.zerock.b01.service;
+package com.example.capstone_1.service;
 
+import com.example.capstone_1.domain.Member;
+import com.example.capstone_1.domain.RefreshToken;
+import com.example.capstone_1.dto.*;
+import com.example.capstone_1.jwt.TokenProvider;
+import com.example.capstone_1.repository.MemberRepository;
+import com.example.capstone_1.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,12 +14,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.zerock.b01.domain.Member;
-import org.zerock.b01.domain.RefreshToken;
-import org.zerock.b01.dto.*;
-import org.zerock.b01.jwt.TokenProvider;
-import org.zerock.b01.repository.MemberRepository;
-import org.zerock.b01.repository.RefreshTokenRepository;
 
 @Service
 @RequiredArgsConstructor

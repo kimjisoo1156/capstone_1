@@ -1,7 +1,7 @@
-package org.zerock.b01.service;
+package com.example.capstone_1.service;
 
-import org.zerock.b01.domain.FreeBoard;
-import org.zerock.b01.dto.BoardDTO;
+import com.example.capstone_1.domain.FreeBoard;
+import com.example.capstone_1.dto.BoardDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;

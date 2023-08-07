@@ -1,4 +1,4 @@
-package org.zerock.b01.dto;
+package com.example.capstone_1.dto;
 
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.validation.constraints.Size;

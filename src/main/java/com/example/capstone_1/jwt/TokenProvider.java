@@ -1,5 +1,6 @@
-package org.zerock.b01.jwt;
+package com.example.capstone_1.jwt;
 
+import com.example.capstone_1.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -12,7 +13,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.zerock.b01.dto.TokenDto;
 
 import java.security.Key;
 import java.util.*;

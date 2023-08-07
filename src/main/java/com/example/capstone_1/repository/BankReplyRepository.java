@@ -1,12 +1,10 @@
-package org.zerock.b01.repository;
+package com.example.capstone_1.repository;
 
+import com.example.capstone_1.domain.BankReply;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.zerock.b01.domain.BankReply;
-import org.zerock.b01.domain.FreeReply;
-import org.zerock.b01.dto.ReplyDTO;
 
 import java.util.List;
 

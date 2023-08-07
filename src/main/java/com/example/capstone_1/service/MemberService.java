@@ -1,10 +1,10 @@
-package org.zerock.b01.service;
+package com.example.capstone_1.service;
 
+import com.example.capstone_1.dto.MemberResponseDto;
+import com.example.capstone_1.repository.MemberRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.zerock.b01.dto.MemberResponseDto;
-import org.zerock.b01.repository.MemberRepository;
 
 @Service
 @RequiredArgsConstructor

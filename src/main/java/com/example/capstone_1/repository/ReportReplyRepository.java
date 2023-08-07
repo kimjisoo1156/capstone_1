@@ -1,12 +1,10 @@
-package org.zerock.b01.repository;
+package com.example.capstone_1.repository;
 
+import com.example.capstone_1.domain.ReportReply;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.zerock.b01.domain.FreeReply;
-import org.zerock.b01.domain.ReportReply;
-
 public interface ReportReplyRepository extends JpaRepository<ReportReply, Long> {
 
     @Query("select r from ReportReply r where r.reportBoard.bno = :bno")

@@ -1,5 +1,7 @@
 package com.example.capstone_1.controller;
 
+import com.example.capstone_1.domain.BankReply;
+import com.example.capstone_1.repository.BankReplyRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,8 +11,6 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import org.zerock.b01.domain.BankReply;
-import org.zerock.b01.repository.BankReplyRepository;
 
 import java.io.IOException;
 import java.util.HashSet;
