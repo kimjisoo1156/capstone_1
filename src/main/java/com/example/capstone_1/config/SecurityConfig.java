@@ -56,7 +56,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/**","/hello").permitAll()
                         .requestMatchers("/boards/list", "/boards/search","/board/**","/css/**", "/js/**","/templates/board/**","/upload/**","/view/{fileName}","/remove/{fileName}").permitAll()
                         .requestMatchers("/boards/register","/replies/**").hasAnyRole("USER","ADMIN") //댓글 권한 혹은 작성자 문제로 .. 화면에 안들어가는 예외가 발생함
                         .requestMatchers("/boards/modify/{bno}").hasAnyRole("USER","ADMIN")
