@@ -1,0 +1,48 @@
+package com.example.capstone_1.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.zerock.b01.jwt.TokenProvider;
+import org.zerock.b01.service.AuthService;
+
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+public class AuthController {
+
+    private final AuthService authService;
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+
+    @PostMapping("/signup")
+    public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto memberRequestDto) {
+        return ResponseEntity.ok(authService.signup(memberRequestDto));
+    }
+
+    @PostMapping("/login") //로그인 dto따로 만들어야 함.멤버리퀘스트 디티오를 로그인 디티오로 바꿈.
+    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
+        return ResponseEntity.ok(authService.login(loginDto));
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+        return ResponseEntity.ok(authService.reissue(tokenRequestDto));
+    }
+
+
+
+
+
+
+
+
+
+}
