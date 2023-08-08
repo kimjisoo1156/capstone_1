@@ -17,6 +17,7 @@ public class UploadResultDTO {
 
     private boolean img;
 
+    private String url; // 추가한 부분
     public String getLink(){
 
         if(img){

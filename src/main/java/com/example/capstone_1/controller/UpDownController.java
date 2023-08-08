@@ -3,6 +3,7 @@ package com.example.capstone_1.controller;
 
 import com.example.capstone_1.dto.UploadFileDTO;
 import com.example.capstone_1.dto.UploadResultDTO;
+import com.example.capstone_1.utill.S3Uploader;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,68 +28,104 @@ import java.util.*;
 @RestController
 @Log4j2
 public class UpDownController {
+    private final S3Uploader s3Uploader;
 
-    @Value("${com.example.upload.path}")// import 시에 springframework으로 시작하는 Value
+    public UpDownController(S3Uploader s3Uploader) {
+        this.s3Uploader = s3Uploader;
+    }
+
+    @Value("${com.example.upload.path}")
     private String uploadPath;
 
-    @Operation(summary =  "POST 방식으로 파일 등록")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<UploadResultDTO> upload(
-            @Parameter(
-                    description = "Files to be uploaded",
-                    content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
-            )
-            UploadFileDTO uploadFileDTO){
+    public List<UploadResultDTO> upload(UploadFileDTO uploadFileDTO) {
+        List<UploadResultDTO> resultList = new ArrayList<>();
 
-        log.info(uploadFileDTO);
-
-        if(uploadFileDTO.getFiles() != null){
-
-            final List<UploadResultDTO> list = new ArrayList<>();
-
+        if (uploadFileDTO.getFiles() != null) {
             uploadFileDTO.getFiles().forEach(multipartFile -> {
-
                 String originalName = multipartFile.getOriginalFilename();
-                log.info(originalName);
-
                 String uuid = UUID.randomUUID().toString();
 
-                Path savePath = Paths.get(uploadPath, uuid+"_"+ originalName);
-
-                boolean image = false;
-
                 try {
-                    multipartFile.transferTo(savePath);
+                    // S3로 파일 업로드
+                    String s3Url = s3Uploader.upload(multipartFile, "uploads"); // "uploads"는 S3 내의 디렉토리명
 
-                    //이미지 파일의 종류라면
-                    if(Files.probeContentType(savePath).startsWith("image")){
-
-                        image = true;
-
-                        File thumbFile = new File(uploadPath, "s_" + uuid+"_"+ originalName);
-
-                        Thumbnailator.createThumbnail(savePath.toFile(), thumbFile, 200,200);
-                    }
+                    resultList.add(UploadResultDTO.builder()
+                            .uuid(uuid)
+                            .fileName(originalName)
+                            .img(multipartFile.getContentType().startsWith("image"))
+                            .url(s3Url) // S3로 업로드한 파일의 URL
+                            .build());
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            });
+        }
 
-                list.add(UploadResultDTO.builder()
-                        .uuid(uuid)
-                        .fileName(originalName)
-                        .img(image).build()
-                );
-
-
-
-            });//end each
-
-            return list;
-        }//end if
-
-        return null;
+        return resultList;
     }
+//    @Value("${com.example.upload.path}")// import 시에 springframework으로 시작하는 Value
+//    private String uploadPath;
+//
+//    @Operation(summary =  "POST 방식으로 파일 등록")
+//    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public List<UploadResultDTO> upload(
+//            @Parameter(
+//                    description = "Files to be uploaded",
+//                    content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
+//            )
+//            UploadFileDTO uploadFileDTO){
+//
+//        log.info(uploadFileDTO);
+//
+//        if(uploadFileDTO.getFiles() != null){
+//
+//            final List<UploadResultDTO> list = new ArrayList<>();
+//
+//            uploadFileDTO.getFiles().forEach(multipartFile -> {
+//
+//                String originalName = multipartFile.getOriginalFilename();
+//                log.info(originalName);
+//
+//                String uuid = UUID.randomUUID().toString();
+//
+//                Path savePath = Paths.get(uploadPath, uuid+"_"+ originalName);
+//
+//                boolean image = false;
+//
+//                try {
+//                    multipartFile.transferTo(savePath);
+//
+//                    //이미지 파일의 종류라면
+//                    if(Files.probeContentType(savePath).startsWith("image")){
+//
+//                        image = true;
+//
+//                        File thumbFile = new File(uploadPath, "s_" + uuid+"_"+ originalName);
+//
+//                        Thumbnailator.createThumbnail(savePath.toFile(), thumbFile, 200,200);
+//                    }
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                list.add(UploadResultDTO.builder()
+//                        .uuid(uuid)
+//                        .fileName(originalName)
+//                        .img(image).build()
+//                );
+//
+//
+//
+//            });//end each
+//
+//            return list;
+//        }//end if
+//
+//        return null;
+//    }
 
 
     @Operation(summary =  "GET방식으로 첨부파일 조회")
