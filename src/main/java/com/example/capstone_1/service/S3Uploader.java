@@ -1,4 +1,4 @@
-package com.example.capstone_1.utill;
+package com.example.capstone_1.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -39,4 +39,16 @@ public class S3Uploader {
 
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
+    public String getFileUrl(String path) {
+        return amazonS3.getUrl(bucketName, path).toString();
+    }
+
+    public void deleteFile(String path) {
+        amazonS3.deleteObject(bucketName, path);
+    }
+    public String getFileNameFromUrl(String url) {
+        String[] parts = url.split("/");
+        return parts[parts.length - 1];
+    }
+
 }

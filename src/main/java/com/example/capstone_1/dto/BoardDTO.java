@@ -39,5 +39,6 @@ public class BoardDTO {
 
     private boolean isSecret;
 
+    private List<UploadFileDTO> uploadFiles;
 
 }
