@@ -13,7 +13,9 @@ public interface BoardService {
 
     BoardDTO readOne(Long bno);
 
-    void modify(BoardDTO boardDTO);
+   // void modify(BoardDTO boardDTO);
+
+    void modify(BoardDTO boardDTO, MultipartFile[] imageFiles);
 
     void remove(Long bno);
 

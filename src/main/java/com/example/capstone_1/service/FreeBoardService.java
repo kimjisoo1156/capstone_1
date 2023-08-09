@@ -2,13 +2,17 @@ package com.example.capstone_1.service;
 
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.dto.BoardDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public interface FreeBoardService extends BoardService{
 
+    List<String> uploadImagesToS3(List<MultipartFile> images);
 
+    String uploadImageToS3(MultipartFile image);
 
     default FreeBoard dtoToEntityFreeBoard(BoardDTO boardDTO){
 
@@ -30,7 +34,6 @@ public interface FreeBoardService extends BoardService{
     }
 
     default BoardDTO entityToDTOFreeBoard(FreeBoard board) {
-
         BoardDTO boardDTO = BoardDTO.builder()
                 .bno(board.getBno())
                 .title(board.getTitle())

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
@@ -84,10 +85,11 @@ public class BoardController {
     }
 
     @PostMapping("/modify")
-    public String modify( @Valid BoardDTO boardDTO,
-                          BindingResult bindingResult,
-                          PageRequestDTO pageRequestDTO,
-                          RedirectAttributes redirectAttributes){
+    public String modify(@Valid BoardDTO boardDTO,
+                         @RequestParam("imageFiles") MultipartFile[] imageFiles, // Get uploaded image files
+                         BindingResult bindingResult,
+                         PageRequestDTO pageRequestDTO,
+                         RedirectAttributes redirectAttributes) {
 
         log.info("board modify post......." + boardDTO);
 
@@ -103,7 +105,7 @@ public class BoardController {
             return "redirect:/board/modify?"+link;
         }
 
-        freeBoardService.modify(boardDTO);
+        freeBoardService.modify(boardDTO, imageFiles);
 
         redirectAttributes.addFlashAttribute("result", "modified");
 

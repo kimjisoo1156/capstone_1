@@ -19,10 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import com.amazonaws.services.s3.model.PutObjectResult;
@@ -72,28 +69,28 @@ public class FreeBoardServiceImpl implements FreeBoardService{
     }
 
     @Override
-    public void modify(BoardDTO boardDTO) {
+    public void modify(BoardDTO boardDTO, MultipartFile[] imageFiles) {
         Optional<FreeBoard> result = freeBoardRepository.findById(boardDTO.getBno());
         FreeBoard board = result.orElseThrow();
 
         board.changeFreeBoard(boardDTO.getTitle(), boardDTO.getContent());
 
-        // 이미지를 전부 제거하고 새로 업로드
+        // Clear existing images
         board.clearImagesFreeBoard();
 
-        if (boardDTO.getUploadFiles() != null) {
-            for (UploadFileDTO uploadFileDTO : boardDTO.getUploadFiles()) {
-                List<String> imageUrls = uploadImagesToS3(uploadFileDTO.getFiles());
-                for (String imageUrl : imageUrls) {
-                    String uuid = UUID.randomUUID().toString(); // 이미지용 UUID 생성
-                    board.addImageFreeBoard(uuid, imageUrl); // uuid와 imageUrl 모두 전달
-                }
+        // Upload new images and update URLs
+        if (imageFiles != null && imageFiles.length > 0) {
+            List<String> imageUrls = uploadImagesToS3(Arrays.asList(imageFiles));
+            for (String imageUrl : imageUrls) {
+                String uuid = UUID.randomUUID().toString();
+                board.addImageFreeBoard(uuid, imageUrl);
             }
         }
 
         freeBoardRepository.save(board);
     }
-    private List<String> uploadImagesToS3(List<MultipartFile> images) {
+
+    public List<String> uploadImagesToS3(List<MultipartFile> images) {
         List<String> imageUrls = new ArrayList<>();
 
         try {
@@ -109,7 +106,7 @@ public class FreeBoardServiceImpl implements FreeBoardService{
         }
     }
 
-    private String uploadImageToS3(MultipartFile image) {
+    public String uploadImageToS3(MultipartFile image) {
         try {
             String uuid = UUID.randomUUID().toString();
             String s3FileName = uuid + "_" + image.getOriginalFilename();

@@ -20,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,9 +79,10 @@ public class BoardController_front {
         return ResponseEntity.ok(bno);
     }
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PutMapping("/free/modify/{bno}") //수정 api -> http://localhost:8080/api/boards/modify/1
+    @PutMapping("/free/modify/{bno}")
     public ResponseEntity<String> FreeModify(@PathVariable Long bno,
                                              @RequestBody @Valid BoardDTO boardDTO,
+                                             @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles,
                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream()
@@ -90,9 +92,8 @@ public class BoardController_front {
         }
 
         boardDTO.setBno(bno);
-        freeBoardService.modify(boardDTO);
+        freeBoardService.modify(boardDTO, imageFiles); // Pass imageFiles to the modify method
 
         return ResponseEntity.ok("Board modified successfully.");
     }
-
 }
