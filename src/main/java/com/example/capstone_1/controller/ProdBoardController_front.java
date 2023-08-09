@@ -28,31 +28,31 @@ public class ProdBoardController_front {
 
     private final FreeBoardService freeBoardService;
     private final ReplyService freeReplyService;
-    private final ReportBoardService reportBoardService;
-    private final ReplyService reportReplyService;
-    private final NoticeBoardService noticeBoardService;
-    private final ReplyService noticeReplyService;
-    private final BankBoardService bankBoardService;
-    private final ReplyService bankReplyService;
+//    private final ReportBoardService reportBoardService;
+//    private final ReplyService reportReplyService;
+//    private final NoticeBoardService noticeBoardService;
+//    private final ReplyService noticeReplyService;
+//    private final BankBoardService bankBoardService;
+//    private final ReplyService bankReplyService;
 
 
     public ProdBoardController_front(FreeBoardService freeBoardService,
                                      @Qualifier("freeReplyServiceImpl") ReplyService freeReplyService,
-                                     ReportBoardService reportBoardService,
-                                     @Qualifier("reportReplyServiceImpl") ReplyService reportReplyService,
-                                     NoticeBoardService noticeBoardService,
-                                     @Qualifier("noticeReplyServiceImpl") ReplyService noticeReplyService,
-                                     BankBoardService bankBoardService,
-                                     @Qualifier("bankReplyServiceImpl") ReplyService bankReplyService,
+//                                     ReportBoardService reportBoardService,
+//                                     @Qualifier("reportReplyServiceImpl") ReplyService reportReplyService,
+//                                     NoticeBoardService noticeBoardService,
+//                                     @Qualifier("noticeReplyServiceImpl") ReplyService noticeReplyService,
+//                                     BankBoardService bankBoardService,
+//                                     @Qualifier("bankReplyServiceImpl") ReplyService bankReplyService,
                                      S3Uploader s3Uploader) {
         this.freeBoardService = freeBoardService;
         this.freeReplyService = freeReplyService;
-        this.reportBoardService = reportBoardService;
-        this.reportReplyService = reportReplyService;
-        this.noticeBoardService = noticeBoardService;
-        this.noticeReplyService = noticeReplyService;
-        this.bankBoardService = bankBoardService;
-        this.bankReplyService = bankReplyService;
+//        this.reportBoardService = reportBoardService;
+//        this.reportReplyService = reportReplyService;
+//        this.noticeBoardService = noticeBoardService;
+//        this.noticeReplyService = noticeReplyService;
+//        this.bankBoardService = bankBoardService;
+//        this.bankReplyService = bankReplyService;
         this.s3Uploader = s3Uploader; // s3Uploader 초기화
     }
 
@@ -173,24 +173,6 @@ public class ProdBoardController_front {
 
         return ResponseEntity.ok("Board removed successfully.");
     }
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/report/remove/{bno}") //게시판 삭제 -> http://localhost:8080/api/boards/remove/1
-    public ResponseEntity<String> ReportRemoveBoard(@PathVariable Long bno) {
-
-        // 파일 삭제
-        BoardDTO boardDTO = reportBoardService.readOne(bno);
-        if (boardDTO.getFileNames() != null && !boardDTO.getFileNames().isEmpty()) {
-            removeFiles(boardDTO.getFileNames());
-        }
-
-        //게시물에 있는 댓글들 삭제하려면, 해당 게시판의 댓글 번호들을 알아야 겠지.
-        reportReplyService.removeRepliesByBoardId(bno);
-
-        reportBoardService.remove(bno); //게시물 삭제
-
-        return ResponseEntity.ok("Board removed successfully.");
-    }
-
     public void removeFiles(List<String> files) {
         for (String fileName : files) {
             try {
