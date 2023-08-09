@@ -15,9 +15,10 @@ public class UploadResultDTO {
 
     private String fileName;
 
+    private String imageUrl;
+
     private boolean img;
 
-    private String imageUrl;
     public String getLink(){
 
         if(img){

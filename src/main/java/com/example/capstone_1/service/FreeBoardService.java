@@ -24,10 +24,12 @@ public interface FreeBoardService extends BoardService{
 
                 .build();
 
-        if(boardDTO.getFileNames() != null){
+        if (boardDTO.getFileNames() != null) {
             boardDTO.getFileNames().forEach(fileName -> {
                 String[] arr = fileName.split("_");
-                board.addImageFreeBoard(arr[0], arr[1]);
+                String uuid = arr[0];
+                String imageUrl = arr[1];
+                board.addImageFreeBoard(uuid, fileName, imageUrl); // 수정된 부분
             });
         }
         return board;

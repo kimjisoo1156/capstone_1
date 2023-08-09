@@ -18,6 +18,7 @@ public class BoardImage implements Comparable<BoardImage> {  //자유게시판, 
     @Id
     private String uuid;
 
+    private String fileName;
 
     private String imageUrl;
 

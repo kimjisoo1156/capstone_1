@@ -83,13 +83,21 @@ public class FreeBoardServiceImpl implements FreeBoardService{
             List<String> imageUrls = uploadImagesToS3(Arrays.asList(imageFiles));
             for (String imageUrl : imageUrls) {
                 String uuid = UUID.randomUUID().toString();
-                board.addImageFreeBoard(uuid, imageUrl);
+                String fileName = extractFileNameFromUrl(imageUrl); // 이미지 URL에서 파일 이름 추출
+                board.addImageFreeBoard(uuid, fileName, imageUrl);
             }
         }
 
         freeBoardRepository.save(board);
     }
-
+    //이미지 URL에서 파일 이름 추출하는 메서드
+    private String extractFileNameFromUrl(String imageUrl) {
+        int lastSlashIndex = imageUrl.lastIndexOf("/");
+        if (lastSlashIndex != -1) {
+            return imageUrl.substring(lastSlashIndex + 1);
+        }
+        return null;
+    }
     public List<String> uploadImagesToS3(List<MultipartFile> images) {
         List<String> imageUrls = new ArrayList<>();
 
