@@ -40,11 +40,11 @@ public class FreeBoard extends BaseEntity{  //자유게시판
     @BatchSize(size = 20)
     private Set<BoardImage> imageSetFreeBoard = new HashSet<>();
 
-    public void addImageFreeBoard(String uuid, String fileName){
+    public void addImageFreeBoard(String uuid, String imageUrl){
 
         BoardImage boardImage = BoardImage.builder()
                 .uuid(uuid)
-                .fileName(fileName)
+                .fileName(imageUrl)
                 .freeBoard(this)
                 .ord(imageSetFreeBoard.size())
                 .build();

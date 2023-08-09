@@ -212,13 +212,29 @@ public class ProdBoardController_front {
     @PutMapping("/free/modify/{bno}") //수정 api -> http://localhost:8080/api/boards/modify/1
     public ResponseEntity<String> FreeModify(@PathVariable Long bno,
                                          @RequestBody @Valid BoardDTO boardDTO,
-                                         BindingResult bindingResult) {
+                                         BindingResult bindingResult,
+                                             @RequestParam(value = "files", required = false) List<MultipartFile> files) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors.toString());
         }
+
+        List<String> imageUrls = new ArrayList<>();
+        if (files != null) {
+            for (MultipartFile file : files) {
+                try {
+                    String imageUrl = s3Uploader.upload(file, UUID.randomUUID().toString());
+                    imageUrls.add(imageUrl);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    log.error("에러 메시지", e);
+                }
+            }
+        }
+        boardDTO.setFileNames(imageUrls); // S3 이미지 URL 추가
+
 
         boardDTO.setBno(bno);
         freeBoardService.modify(boardDTO);
