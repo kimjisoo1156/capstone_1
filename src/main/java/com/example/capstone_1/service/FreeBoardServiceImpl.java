@@ -45,16 +45,25 @@ public class FreeBoardServiceImpl implements FreeBoardService{
         boardDTO.setWriter(loggedInUserEmail);
         FreeBoard board = dtoToEntityFreeBoard(boardDTO);
 
-        if (boardDTO.getFileNames() != null) {
-            for (String fileName : boardDTO.getFileNames()) {
-                String[] arr = fileName.split("_");
-                uploadImageToS3(arr[0], arr[1], imagePath);
+        // S3 업로드와 데이터베이스 저장을 트랜잭션으로 묶음
+        try {
+            Long bno = freeBoardRepository.save(board).getBno();
+
+            if (boardDTO.getFileNames() != null) {
+                for (String fileName : boardDTO.getFileNames()) {
+                    String[] arr = fileName.split("_");
+                    String uuid = arr[0];
+                    String filePath = imagePath + "/" + uuid + "_" + arr[1];
+                    uploadImageToS3(uuid, arr[1], filePath); // S3에 이미지 업로드
+                }
             }
+
+            return bno;
+        } catch (Exception e) {
+            // 트랜잭션 롤백 및 예외 처리
+            log.error("Failed to register board: {}", e.getMessage());
+            throw new RuntimeException("Failed to register board", e);
         }
-
-        Long bno = freeBoardRepository.save(board).getBno();
-
-        return bno;
     }
 
     private void uploadImageToS3(String uuid, String fileName, String imagePath) {
@@ -94,17 +103,20 @@ public class FreeBoardServiceImpl implements FreeBoardService{
 
         board.changeFreeBoard(boardDTO.getTitle(), boardDTO.getContent());
 
-        //첨부파일의 처리
+        // 기존 이미지 삭제
+        for (BoardImage image : board.getImageSetFreeBoard()) {
+            deleteImageFromS3(image.getUuid() + "_" + image.getFileName());
+        }
         board.clearImagesFreeBoard();
 
+        // 새로운 이미지 업로드 및 추가
         if (boardDTO.getFileNames() != null) {
             for (String fileName : boardDTO.getFileNames()) {
                 String[] arr = fileName.split("_");
                 board.addImageFreeBoard(arr[0], arr[1]);
-                uploadImageToS3(arr[0], arr[1],imagePath); // 새 이미지 업로드
+                uploadImageToS3(arr[0], arr[1], imagePath);
             }
         }
-
         freeBoardRepository.save(board);
 
     }
@@ -112,12 +124,15 @@ public class FreeBoardServiceImpl implements FreeBoardService{
     @Override
     public void remove(Long bno) {
 
-        freeBoardRepository.deleteById(bno);
-        // S3에서 이미지 삭제
         FreeBoard board = freeBoardRepository.findById(bno).orElseThrow();
+
+        // S3 이미지 삭제
         for (BoardImage image : board.getImageSetFreeBoard()) {
             deleteImageFromS3(image.getUuid() + "_" + image.getFileName());
         }
+
+        // 데이터베이스에서 게시글 삭제
+        freeBoardRepository.deleteById(bno);
     }
 
     private void deleteImageFromS3(String key) {
