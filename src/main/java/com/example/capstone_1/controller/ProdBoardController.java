@@ -10,10 +10,9 @@ import com.example.capstone_1.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,9 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,8 +77,14 @@ public class ProdBoardController {
             fileUrls.add(s3Url);
         }
         boardDTO.setFileNames(fileUrls);
+        // imagePath를 빈 문자열로 초기화
+        String imagePath = "";
 
-        Long bno  = freeBoardService.register(boardDTO);
+        // boardDTO의 fileNames 리스트가 null이 아니고 비어있지 않은 경우
+        if (boardDTO.getFileNames() != null && !boardDTO.getFileNames().isEmpty()) {
+            imagePath = getImagePathFromS3Url(boardDTO.getFileNames().get(0)); // 첫 번째 이미지 URL을 활용하여 imagePath 얻기
+        }
+        Long bno  = freeBoardService.register(boardDTO, imagePath);
 
         redirectAttributes.addFlashAttribute("result", bno);
 
@@ -126,8 +129,15 @@ public class ProdBoardController {
             fileUrls.add(s3Url);
         }
         boardDTO.setFileNames(fileUrls); // 수정: fileUrls로 설정
+        // imagePath를 빈 문자열로 초기화
+        String imagePath = "";
 
-        freeBoardService.modify(boardDTO);
+        // boardDTO의 fileNames 리스트가 null이 아니고 비어있지 않은 경우
+        if (boardDTO.getFileNames() != null && !boardDTO.getFileNames().isEmpty()) {
+            imagePath = getImagePathFromS3Url(boardDTO.getFileNames().get(0)); // 첫 번째 이미지 URL을 활용하여 imagePath 얻기
+        }
+
+        freeBoardService.modify(boardDTO,imagePath);
 
         redirectAttributes.addFlashAttribute("result", "modified");
 
@@ -136,7 +146,16 @@ public class ProdBoardController {
         return "redirect:/board/read";
     }
 
-
+    private String getImagePathFromS3Url(String s3Url) {
+        if (StringUtils.hasText(s3Url)) {
+            String[] parts = s3Url.split("/");
+            if (parts.length >= 2) {
+                // The image path is the last part of the URL
+                return parts[parts.length - 1];
+            }
+        }
+        return "";
+    }
     @PostMapping("/remove")
     public String remove(BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
 

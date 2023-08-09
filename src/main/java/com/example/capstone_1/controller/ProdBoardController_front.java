@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -67,89 +68,19 @@ public class ProdBoardController_front {
 
         return ResponseEntity.ok(responseDTO);
     }
-
-//    @GetMapping("/report/list")
-//    public ResponseEntity<PageResponseDTO<BoardListAllDTO>> ReprotList(@RequestParam(defaultValue = "1") int page, PageRequestDTO pageRequestDTO) {
-//
-//        int size = 11;
-//
-//        pageRequestDTO.setPage(page);
-//        pageRequestDTO.setSize(size);
-//
-//        PageResponseDTO<BoardListAllDTO> responseDTO = reportBoardService.listWithAll(pageRequestDTO);
-//
-//        return ResponseEntity.ok(responseDTO);
-//    }
-//
-//    @GetMapping("/notice/list")
-//    public ResponseEntity<PageResponseDTO<BoardListAllDTO>> NoticeList(@RequestParam(defaultValue = "1") int page, PageRequestDTO pageRequestDTO) {
-//
-//        int size = 11;
-//
-//        pageRequestDTO.setPage(page);
-//        pageRequestDTO.setSize(size);
-//
-//        PageResponseDTO<BoardListAllDTO> responseDTO = reportBoardService.listWithAll(pageRequestDTO);
-//
-//        return ResponseEntity.ok(responseDTO);
-//    }
-//
-//    @GetMapping("/bank/list")
-//    public ResponseEntity<PageResponseDTO<BoardListAllDTO>> BankList(@RequestParam(defaultValue = "1") int page, PageRequestDTO pageRequestDTO) {
-//
-//        int size = 11;
-//
-//        pageRequestDTO.setPage(page);
-//        pageRequestDTO.setSize(size);
-//
-//        PageResponseDTO<BoardListAllDTO> responseDTO = reportBoardService.listWithAll(pageRequestDTO);
-//
-//        return ResponseEntity.ok(responseDTO);
-//    }
-
     @GetMapping("/free/search") //게시판 검색 http://localhost:8080/api/boards/list?page=1&type=w&keyword=user9
     public ResponseEntity<PageResponseDTO<BoardListAllDTO>> FreeSearch(PageRequestDTO pageRequestDTO) {
         PageResponseDTO<BoardListAllDTO> responseDTO = freeBoardService.listWithAll(pageRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
 
-//    @GetMapping("/report/search")
-//    public ResponseEntity<PageResponseDTO<BoardListAllDTO>> ReportSearch(PageRequestDTO pageRequestDTO) {
-//        PageResponseDTO<BoardListAllDTO> responseDTO = reportBoardService.listWithAll(pageRequestDTO);
-//        return ResponseEntity.ok(responseDTO);
-//    }
-//
-//    @GetMapping("/notice/search")
-//    public ResponseEntity<PageResponseDTO<BoardListAllDTO>> NoticeSearch(PageRequestDTO pageRequestDTO) {
-//        PageResponseDTO<BoardListAllDTO> responseDTO = noticeBoardService.listWithAll(pageRequestDTO);
-//        return ResponseEntity.ok(responseDTO);
-//    }
-//    @GetMapping("/bank/search")
-//    public ResponseEntity<PageResponseDTO<BoardListAllDTO>> BankSearch(PageRequestDTO pageRequestDTO) {
-//        PageResponseDTO<BoardListAllDTO> responseDTO = bankBoardService.listWithAll(pageRequestDTO);
-//        return ResponseEntity.ok(responseDTO);
-//    }
-
-
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PostMapping("/free/register") //게시판 등록 http://localhost:8080/api/boards/register
+    @PostMapping("/free/register")
     public ResponseEntity<Long> FreeRegisterPost(@Valid @RequestBody BoardDTO boardDTO, BindingResult bindingResult,
-                                                 @RequestParam(value = "files", required = false) List<MultipartFile> files ) {
+                                                 @RequestParam(value = "files", required = false) List<MultipartFile> files) {
 
+        // ... (기존 코드)
 
-        if (bindingResult.hasErrors()) {
-            // 유효성 검사 실패 시 오류 응답
-            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-            for (FieldError fieldError : fieldErrors) {
-                String fieldName = fieldError.getField();
-                String errorMessage = fieldError.getDefaultMessage();
-                // 에러가 발생한 필드와 에러 메시지를 로깅하거나 사용자에게 알림
-                System.out.println("에러 발생 필드: " + fieldName);
-                System.out.println("에러 메시지: " + errorMessage);
-            }
-
-            return ResponseEntity.badRequest().build();
-        }
         List<String> imageUrls = new ArrayList<>();
         if (files != null) {
             for (MultipartFile file : files) {
@@ -161,58 +92,35 @@ public class ProdBoardController_front {
                     log.error("에러 메시지", e);
                 }
             }
+            boardDTO.setFileNames(imageUrls);
         }
-        boardDTO.setFileNames(imageUrls);
 
+        // imagePath를 빈 문자열로 초기화
+        String imagePath = "";
 
-        Long bno = freeBoardService.register(boardDTO);
+        // boardDTO의 fileNames 리스트가 null이 아니고 비어있지 않은 경우
+        if (boardDTO.getFileNames() != null && !boardDTO.getFileNames().isEmpty()) {
+            imagePath = getImagePathFromS3Url(boardDTO.getFileNames().get(0)); // 첫 번째 이미지 URL을 활용하여 imagePath 얻기
+        }
+
+        Long bno = freeBoardService.register(boardDTO, imagePath);
         return ResponseEntity.ok(bno);
     }
-
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-//    @PostMapping("/report/register")
-//    public ResponseEntity<Long> ReportRegisterPost(@Valid @RequestBody BoardDTO boardDTO, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        Long bno = reportBoardService.register(boardDTO);
-//        return ResponseEntity.ok(bno);
-//    }
-//
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @PostMapping("/notice/register")
-//    public ResponseEntity<Long> NoticeRegisterPost(@Valid @RequestBody BoardDTO boardDTO, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        Long bno = noticeBoardService.register(boardDTO);
-//        return ResponseEntity.ok(bno);
-//    }
-//
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-//    @PostMapping("/bank/register")
-//    public ResponseEntity<Long> BankRegisterPost(@Valid @RequestBody BankBoardDTO boardDTO, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        Long bno = bankBoardService.register(boardDTO);
-//        return ResponseEntity.ok(bno);
-//    }
-
-//    {
-//        "title": "Updated Title",
-//            "content": "Updated Content",
-//            "writer": "Updated Writer"
-//
-//    }
+    private String getImagePathFromS3Url(String s3Url) {
+        if (StringUtils.hasText(s3Url)) {
+            String[] parts = s3Url.split("/");
+            if (parts.length >= 2) {
+                // The image path is the last part of the URL
+                return parts[parts.length - 1];
+            }
+        }
+        return "";
+    }
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PutMapping("/free/modify/{bno}") //수정 api -> http://localhost:8080/api/boards/modify/1
+    @PutMapping("/free/modify/{bno}")
     public ResponseEntity<String> FreeModify(@PathVariable Long bno,
-                                         @RequestBody @Valid BoardDTO boardDTO,
-                                         BindingResult bindingResult,
+                                             @RequestBody @Valid BoardDTO boardDTO,
+                                             BindingResult bindingResult,
                                              @RequestParam(value = "files", required = false) List<MultipartFile> files) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream()
@@ -232,66 +140,22 @@ public class ProdBoardController_front {
                     log.error("에러 메시지", e);
                 }
             }
+            boardDTO.setFileNames(imageUrls); // S3 이미지 URL 추가
         }
-        boardDTO.setFileNames(imageUrls); // S3 이미지 URL 추가
 
+        // imagePath를 빈 문자열로 초기화
+        String imagePath = "";
+
+        // boardDTO의 fileNames 리스트가 null이 아니고 비어있지 않은 경우
+        if (boardDTO.getFileNames() != null && !boardDTO.getFileNames().isEmpty()) {
+            imagePath = getImagePathFromS3Url(boardDTO.getFileNames().get(0)); // 첫 번째 이미지 URL을 활용하여 imagePath 얻기
+        }
 
         boardDTO.setBno(bno);
-        freeBoardService.modify(boardDTO);
+        freeBoardService.modify(boardDTO, imagePath);
 
         return ResponseEntity.ok("Board modified successfully.");
     }
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-//    @PutMapping("/report/modify/{bno}")
-//    public ResponseEntity<String> ReportModify(@PathVariable Long bno,
-//                                         @RequestBody @Valid BoardDTO boardDTO,
-//                                         BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            List<String> errors = bindingResult.getAllErrors().stream()
-//                    .map(ObjectError::getDefaultMessage)
-//                    .collect(Collectors.toList());
-//            return ResponseEntity.badRequest().body(errors.toString());
-//        }
-//
-//        boardDTO.setBno(bno);
-//        freeBoardService.modify(boardDTO);
-//
-//        return ResponseEntity.ok("Board modified successfully.");
-//    }
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-//    @PutMapping("/notice/modify/{bno}")
-//    public ResponseEntity<String> NoticeModify(@PathVariable Long bno,
-//                                               @RequestBody @Valid BoardDTO boardDTO,
-//                                               BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            List<String> errors = bindingResult.getAllErrors().stream()
-//                    .map(ObjectError::getDefaultMessage)
-//                    .collect(Collectors.toList());
-//            return ResponseEntity.badRequest().body(errors.toString());
-//        }
-//
-//        boardDTO.setBno(bno);
-//        noticeBoardService.modify(boardDTO);
-//
-//        return ResponseEntity.ok("Board modified successfully.");
-//    }
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-//    @PutMapping("/bank/modify/{bno}")
-//    public ResponseEntity<String> BankModify(@PathVariable Long bno,
-//                                               @RequestBody @Valid BankBoardDTO boardDTO,
-//                                               BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            List<String> errors = bindingResult.getAllErrors().stream()
-//                    .map(ObjectError::getDefaultMessage)
-//                    .collect(Collectors.toList());
-//            return ResponseEntity.badRequest().body(errors.toString());
-//        }
-//
-//        boardDTO.setBno(bno);
-//        bankBoardService.modify(boardDTO);
-//
-//        return ResponseEntity.ok("Board modified successfully.");
-//    }
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/free/remove/{bno}") //게시판 삭제 -> http://localhost:8080/api/boards/remove/1
     public ResponseEntity<String> FreeRemoveBoard(@PathVariable Long bno) {
@@ -326,40 +190,6 @@ public class ProdBoardController_front {
 
         return ResponseEntity.ok("Board removed successfully.");
     }
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @DeleteMapping("/notice/remove/{bno}") //게시판 삭제 -> http://localhost:8080/api/boards/remove/1
-//    public ResponseEntity<String> NoticeRemoveBoard(@PathVariable Long bno) {
-//
-//        // 파일 삭제
-//        BoardDTO boardDTO = noticeBoardService.readOne(bno);
-//        if (boardDTO.getFileNames() != null && !boardDTO.getFileNames().isEmpty()) {
-//            removeFiles(boardDTO.getFileNames());
-//        }
-//
-//        //게시물에 있는 댓글들 삭제하려면, 해당 게시판의 댓글 번호들을 알아야 겠지.
-//        noticeReplyService.removeRepliesByBoardId(bno);
-//
-//        noticeBoardService.remove(bno); //게시물 삭제
-//
-//        return ResponseEntity.ok("Board removed successfully.");
-//    }
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-//    @DeleteMapping("/bank/remove/{bno}") //게시판 삭제 -> http://localhost:8080/api/boards/remove/1
-//    public ResponseEntity<String> BankRemoveBoard(@PathVariable Long bno) {
-//
-//        // 파일 삭제
-//        BoardDTO boardDTO = bankBoardService.readOne(bno);
-//        if (boardDTO.getFileNames() != null && !boardDTO.getFileNames().isEmpty()) {
-//            removeFiles(boardDTO.getFileNames());
-//        }
-//
-//        //게시물에 있는 댓글들 삭제하려면, 해당 게시판의 댓글 번호들을 알아야 겠지.
-//        bankReplyService.removeRepliesByBoardId(bno);
-//
-//        bankBoardService.remove(bno); //게시물 삭제
-//
-//        return ResponseEntity.ok("Board removed successfully.");
-//    }
 
     public void removeFiles(List<String> files) {
         for (String fileName : files) {
