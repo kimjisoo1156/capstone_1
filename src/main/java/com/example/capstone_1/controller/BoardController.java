@@ -28,7 +28,7 @@ public class BoardController {
 
     private final AmazonS3 amazonS3; // Inject AmazonS3 instance
 
-    @Value("${caspton-bucket}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName; // Inject bucketName value
 
     private final FreeBoardService freeBoardService;
