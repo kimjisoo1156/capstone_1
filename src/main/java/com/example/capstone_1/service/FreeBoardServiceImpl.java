@@ -1,5 +1,9 @@
 package com.example.capstone_1.service;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.capstone_1.domain.BoardImage;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.dto.*;
 import com.example.capstone_1.repository.FreeBoardRepository;
@@ -11,9 +15,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.amazonaws.services.s3.model.ObjectMetadata;
 
 
 @Service
@@ -27,18 +36,42 @@ public class FreeBoardServiceImpl implements FreeBoardService{
 
     private final UserService userService;
 
+    private final AmazonS3 amazonS3; // AmazonS3 객체를 주입 받아야 합니다.
+    private final String bucketName = "caspton-bucket"; // S3 버킷 이름을 여기에 설정하세요.
+
     @Override
-    public Long register(BoardDTO boardDTO) {
+    public Long register(BoardDTO boardDTO,String imagePath) {
         String loggedInUserEmail = userService.getLoggedInUserEmail();
         boardDTO.setWriter(loggedInUserEmail);
         FreeBoard board = dtoToEntityFreeBoard(boardDTO);
+
+        if (boardDTO.getFileNames() != null) {
+            for (String fileName : boardDTO.getFileNames()) {
+                String[] arr = fileName.split("_");
+                uploadImageToS3(arr[0], arr[1], imagePath);
+            }
+        }
 
         Long bno = freeBoardRepository.save(board).getBno();
 
         return bno;
     }
 
+    private void uploadImageToS3(String uuid, String fileName, String imagePath) {
+        try {
+            InputStream inputStream = getImageInputStream(imagePath);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image/jpeg");
 
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, uuid + "_" + fileName, inputStream, metadata);
+            amazonS3.putObject(putObjectRequest);
+        } catch (Exception e) {
+            // 업로드 실패 시 예외 처리
+        }
+    }
+    private InputStream getImageInputStream(String imagePath) throws FileNotFoundException {
+        return new FileInputStream(imagePath);
+    }
     @Override
     public BoardDTO readOne(Long bno) {
 
@@ -53,7 +86,7 @@ public class FreeBoardServiceImpl implements FreeBoardService{
     }
 
     @Override
-    public void modify(BoardDTO boardDTO) {
+    public void modify(BoardDTO boardDTO, String imagePath) {
 
         Optional<FreeBoard> result = freeBoardRepository.findById(boardDTO.getBno());
 
@@ -64,10 +97,11 @@ public class FreeBoardServiceImpl implements FreeBoardService{
         //첨부파일의 처리
         board.clearImagesFreeBoard();
 
-        if(boardDTO.getFileNames() != null){
+        if (boardDTO.getFileNames() != null) {
             for (String fileName : boardDTO.getFileNames()) {
                 String[] arr = fileName.split("_");
                 board.addImageFreeBoard(arr[0], arr[1]);
+                uploadImageToS3(arr[0], arr[1],imagePath); // 새 이미지 업로드
             }
         }
 
@@ -79,9 +113,20 @@ public class FreeBoardServiceImpl implements FreeBoardService{
     public void remove(Long bno) {
 
         freeBoardRepository.deleteById(bno);
-
+        // S3에서 이미지 삭제
+        FreeBoard board = freeBoardRepository.findById(bno).orElseThrow();
+        for (BoardImage image : board.getImageSetFreeBoard()) {
+            deleteImageFromS3(image.getUuid() + "_" + image.getFileName());
+        }
     }
 
+    private void deleteImageFromS3(String key) {
+        try {
+            amazonS3.deleteObject(bucketName, key);
+        } catch (AmazonServiceException e) {
+            // 삭제 실패 시 예외 처리
+        }
+    }
     @Override
     public PageResponseDTO<BoardDTO> list(PageRequestDTO pageRequestDTO) {
 

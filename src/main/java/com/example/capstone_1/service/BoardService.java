@@ -5,11 +5,11 @@ import com.example.capstone_1.dto.*;
 
 public interface BoardService {
 
-    Long register(BoardDTO boardDTO);
+    Long register(BoardDTO boardDTO,String imagePath);
 
     BoardDTO readOne(Long bno);
 
-    void modify(BoardDTO boardDTO);
+    void modify(BoardDTO boardDTO,String imagePath);
 
     void remove(Long bno);
 
