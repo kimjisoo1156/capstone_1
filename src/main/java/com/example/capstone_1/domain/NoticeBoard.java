@@ -40,11 +40,11 @@ public class NoticeBoard extends BaseEntity{
     @BatchSize(size = 20)
     private Set<BoardImage> imageSetNoticeBoard = new HashSet<>();
 
-    public void addImageNoticeBoard(String uuid, String fileName){
+    public void addImageNoticeBoard(String uuid, String imageUrl){
 
         BoardImage boardImage = BoardImage.builder()
                 .uuid(uuid)
-                .fileName(fileName)
+                .imageUrl(imageUrl)
                 .noticeBoard(this)
                 .ord(imageSetNoticeBoard.size())
                 .build();

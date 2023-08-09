@@ -44,7 +44,7 @@ public class FreeBoard extends BaseEntity{  //자유게시판
 
         BoardImage boardImage = BoardImage.builder()
                 .uuid(uuid)
-                .fileName(imageUrl)
+                .imageUrl(imageUrl)
                 .freeBoard(this)
                 .ord(imageSetFreeBoard.size())
                 .build();

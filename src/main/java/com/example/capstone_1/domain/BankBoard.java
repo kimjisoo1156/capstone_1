@@ -52,11 +52,11 @@ public class BankBoard extends BaseEntity {
     @BatchSize(size = 20)
     private Set<BoardImage> imageSetBankBoard = new HashSet<>();
 
-    public void addImageBankBoard(String uuid, String fileName){
+    public void addImageBankBoard(String uuid, String imageUrl){
 
         BoardImage boardImage = BoardImage.builder()
                 .uuid(uuid)
-                .fileName(fileName)
+                .imageUrl(imageUrl)
                 .bankBoard(this)
                 .ord(imageSetBankBoard.size())
                 .build();

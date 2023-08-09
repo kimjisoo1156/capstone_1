@@ -134,7 +134,7 @@ public class NoticeBoardSearchImpl  extends QuerydslRepositorySupport implements
             List<BoardImageDTO> imageDTOS = board1.getImageSetNoticeBoard().stream().sorted()
                     .map(boardImage -> BoardImageDTO.builder()
                             .uuid(boardImage.getUuid())
-                            .fileName(boardImage.getFileName())
+                            .imageUrl(boardImage.getImageUrl())
                             .ord(boardImage.getOrd())
                             .build()
                     ).collect(Collectors.toList());

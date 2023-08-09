@@ -41,11 +41,11 @@ public class ReportBoard extends BaseEntity{
     @BatchSize(size = 20)
     private Set<BoardImage> imageSetReportBoard = new HashSet<>();
 
-    public void addImageRepoartBoard(String uuid, String fileName){
+    public void addImageRepoartBoard(String uuid, String imageUrl){
 
         BoardImage boardImage = BoardImage.builder()
                 .uuid(uuid)
-                .fileName(fileName)
+                .imageUrl(imageUrl)
                 .reportBoard(this)
                 .ord(imageSetReportBoard.size())
                 .build();

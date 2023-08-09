@@ -42,7 +42,7 @@ public interface FreeBoardService extends BoardService{
 
         List<String> fileNames =
                 board.getImageSetFreeBoard().stream().sorted().map(boardImage ->
-                        boardImage.getUuid()+"_"+boardImage.getFileName()).collect(Collectors.toList());
+                        boardImage.getUuid()+"_"+boardImage.getImageUrl()).collect(Collectors.toList());
 
         boardDTO.setFileNames(fileNames);
 
