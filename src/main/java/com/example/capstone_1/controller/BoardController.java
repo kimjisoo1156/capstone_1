@@ -1,48 +1,41 @@
 package com.example.capstone_1.controller;
 
-
+import com.amazonaws.services.s3.AmazonS3;
 import com.example.capstone_1.dto.BoardDTO;
+import jakarta.validation.Valid;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+
 import com.example.capstone_1.dto.BoardListAllDTO;
 import com.example.capstone_1.dto.PageRequestDTO;
 import com.example.capstone_1.dto.PageResponseDTO;
 import com.example.capstone_1.service.FreeBoardService;
-import com.example.capstone_1.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import jakarta.validation.Valid;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/board")
 @Log4j2
 @RequiredArgsConstructor
-public class ProdBoardController {
+public class BoardController {
 
-    // AWS S3Uploader 추가
-    private final S3Uploader s3Uploader;
+    private final AmazonS3 amazonS3; // Inject AmazonS3 instance
 
-    @Value("${cloud.aws.s3.bucket}") // AWS S3 버킷 이름으로 변경
-    private String bucketName;
-
+    @Value("${caspton-bucket}")
+    private String bucketName; // Inject bucketName value
 
     private final FreeBoardService freeBoardService;
 
 
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
-
 
         PageResponseDTO<BoardListAllDTO> responseDTO =
                 freeBoardService.listWithAll(pageRequestDTO);
@@ -59,7 +52,7 @@ public class ProdBoardController {
     }
 
     @PostMapping("/register")
-    public String registerPost(@Valid BoardDTO boardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, @RequestParam("files") MultipartFile[] files) throws IOException {
+    public String registerPost(@Valid BoardDTO boardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
         log.info("board POST register.......");
 
@@ -71,25 +64,13 @@ public class ProdBoardController {
 
         log.info(boardDTO);
 
-        List<String> fileUrls = new ArrayList<>();
-        for (MultipartFile file : files) {
-            String s3Url = s3Uploader.upload(file, "uploads"); // S3로 파일 업로드
-            fileUrls.add(s3Url);
-        }
-        boardDTO.setFileNames(fileUrls);
-        // imagePath를 빈 문자열로 초기화
-        String imagePath = "";
-
-        // boardDTO의 fileNames 리스트가 null이 아니고 비어있지 않은 경우
-        if (boardDTO.getFileNames() != null && !boardDTO.getFileNames().isEmpty()) {
-            imagePath = getImagePathFromS3Url(boardDTO.getFileNames().get(0)); // 첫 번째 이미지 URL을 활용하여 imagePath 얻기
-        }
-        Long bno  = freeBoardService.register(boardDTO, imagePath);
+        Long bno  = freeBoardService.register(boardDTO);
 
         redirectAttributes.addFlashAttribute("result", bno);
 
         return "redirect:/board/list";
     }
+
 
     @GetMapping({"/read", "/modify"})
     public void read(Long bno, PageRequestDTO pageRequestDTO, Model model){
@@ -106,8 +87,7 @@ public class ProdBoardController {
     public String modify( @Valid BoardDTO boardDTO,
                           BindingResult bindingResult,
                           PageRequestDTO pageRequestDTO,
-                          RedirectAttributes redirectAttributes,
-                          @RequestParam("files") MultipartFile[] files) throws IOException {
+                          RedirectAttributes redirectAttributes){
 
         log.info("board modify post......." + boardDTO);
 
@@ -123,21 +103,7 @@ public class ProdBoardController {
             return "redirect:/board/modify?"+link;
         }
 
-        List<String> fileUrls = new ArrayList<>();
-        for (MultipartFile file : files) {
-            String s3Url = s3Uploader.upload(file, "uploads"); // S3로 파일 업로드
-            fileUrls.add(s3Url);
-        }
-        boardDTO.setFileNames(fileUrls); // 수정: fileUrls로 설정
-        // imagePath를 빈 문자열로 초기화
-        String imagePath = "";
-
-        // boardDTO의 fileNames 리스트가 null이 아니고 비어있지 않은 경우
-        if (boardDTO.getFileNames() != null && !boardDTO.getFileNames().isEmpty()) {
-            imagePath = getImagePathFromS3Url(boardDTO.getFileNames().get(0)); // 첫 번째 이미지 URL을 활용하여 imagePath 얻기
-        }
-
-        freeBoardService.modify(boardDTO,imagePath);
+        freeBoardService.modify(boardDTO);
 
         redirectAttributes.addFlashAttribute("result", "modified");
 
@@ -146,30 +112,18 @@ public class ProdBoardController {
         return "redirect:/board/read";
     }
 
-    private String getImagePathFromS3Url(String s3Url) {
-        if (StringUtils.hasText(s3Url)) {
-            String[] parts = s3Url.split("/");
-            if (parts.length >= 2) {
-                // The image path is the last part of the URL
-                return parts[parts.length - 1];
-            }
-        }
-        return "";
-    }
     @PostMapping("/remove")
     public String remove(BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
-
-        Long bno  = boardDTO.getBno();
+        Long bno = boardDTO.getBno();
         log.info("remove post.. " + bno);
 
         freeBoardService.remove(bno);
 
-        List<String> fileUrls = boardDTO.getFileNames();
-        if (fileUrls != null && !fileUrls.isEmpty()) {
-            for (String fileUrl : fileUrls) {
-                String fileName = s3Uploader.getFileNameFromUrl(fileUrl);
-                s3Uploader.deleteFile(fileName); // S3에서 파일 삭제
-            }
+        // 게시물이 삭제되었다면 첨부 파일 삭제
+        log.info(boardDTO.getFileNames());
+        List<String> fileNames = boardDTO.getFileNames();
+        if (fileNames != null && fileNames.size() > 0) {
+            removeS3Files(fileNames); // AWS S3 이미지 삭제 호출
         }
 
         redirectAttributes.addFlashAttribute("result", "removed");
@@ -178,5 +132,15 @@ public class ProdBoardController {
     }
 
 
+    // AWS S3 이미지 삭제 메서드
+    public void removeS3Files(List<String> files) {
+        for (String fileName : files) {
+            try {
+                amazonS3.deleteObject(bucketName, fileName); // S3에서 파일 삭제
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+    }
 
 }
