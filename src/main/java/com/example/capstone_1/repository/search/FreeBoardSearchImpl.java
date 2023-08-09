@@ -205,6 +205,7 @@ public class FreeBoardSearchImpl extends QuerydslRepositorySupport implements Fr
             List<BoardImageDTO> imageDTOS = board1.getImageSetFreeBoard().stream().sorted()
                     .map(boardImage -> BoardImageDTO.builder()
                             .uuid(boardImage.getUuid())
+                            .fileName(boardImage.getFileName())
                             .imageUrl(boardImage.getImageUrl())
                             .ord(boardImage.getOrd())
                             .build()
