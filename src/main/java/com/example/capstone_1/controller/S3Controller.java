@@ -5,7 +5,6 @@ import com.example.capstone_1.dto.FileDto;
 import com.example.capstone_1.dto.FileResponseDto;
 import com.example.capstone_1.service.FileService;
 import com.example.capstone_1.service.S3Service;
-import com.example.capstone_1.service.S3Service_1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
