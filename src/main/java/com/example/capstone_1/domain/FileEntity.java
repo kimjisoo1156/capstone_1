@@ -13,22 +13,26 @@ public class FileEntity {
     private Long id;
 
     @Column
-    private String title;
+    private String fileName;
+
+    @Column
+    private String uuid;
 
     @Column
     private String s3Url;
 
-    public FileEntity(String title, String s3Url) {
-        this.title = title;
+    public FileEntity(String fileName,String uuid, String s3Url) {
+        this.fileName = fileName;
+        this.uuid = uuid;
         this.s3Url = s3Url;
     }
 
-    @Override
-    public String toString() {
-        return "FileEntity{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", s3Url='" + s3Url + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "FileEntity{" +
+//                "id=" + id +
+//                ", fileName='" + fileName + '\'' +
+//                ", s3Url='" + s3Url + '\'' +
+//                '}';
+//    }
 }

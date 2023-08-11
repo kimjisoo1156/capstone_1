@@ -2,8 +2,10 @@ package com.example.capstone_1.controller;
 
 import com.example.capstone_1.domain.FileEntity;
 import com.example.capstone_1.dto.FileDto;
+import com.example.capstone_1.dto.FileResponseDto;
 import com.example.capstone_1.service.FileService;
 import com.example.capstone_1.service.S3Service;
+import com.example.capstone_1.service.S3Service_1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,14 +29,12 @@ public class S3Controller {
 
     @PostMapping("/api/upload")
     public String uploadFile(FileDto fileDto) throws IOException {
-        String url = s3Service.uploadFile(fileDto.getFile());
-
-        fileDto.setUrl(url);
-        fileService.save(fileDto);
+        // S3에 파일 업로드 및 정보 저장
+        FileResponseDto fileResponseDto = s3Service.uploadFile(fileDto.getFile());
+        fileService.save(fileResponseDto);
 
         return "redirect:/api/list";
     }
-
     @GetMapping("/api/list")
     public String listPage(Model model) {
         List<FileEntity> fileList =fileService.getFiles();

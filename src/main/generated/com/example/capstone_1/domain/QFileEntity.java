@@ -19,11 +19,13 @@ public class QFileEntity extends EntityPathBase<FileEntity> {
 
     public static final QFileEntity fileEntity = new QFileEntity("fileEntity");
 
+    public final StringPath fileName = createString("fileName");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath s3Url = createString("s3Url");
 
-    public final StringPath title = createString("title");
+    public final StringPath uuid = createString("uuid");
 
     public QFileEntity(String variable) {
         super(FileEntity.class, forVariable(variable));
