@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>S3 파일 업로드 테스트</title>
+</head>
+<body>
+<h1>파일 업로드</h1> <hr>
+<form th:action="@{/api/upload}" method="post" enctype="multipart/form-data">
+    파일 : <input type="file" name="file"> <br>
+    <button>등록하기</button>
+</form>
+<hr>
+
+<div th:each="file : ${fileList}">
+    <div style="margin-bottom: 30px">
+        <p th:inline="text">제목 : [[${file.fileName}]]</p>
+        <img th:src="${file.s3Url}" style="width: 800px; height: 300px;">
+    </div>
+    <form th:action="@{/api/edit/{id}(id=${file.id})}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file"> <br>
+
+        <button>수정하기</button>
+    </form>
+    <form th:action="@{/api/delete/{id}(id=${file.id})}" method="post">
+        <button>삭제하기</button>
+    </form>
+    <hr>
+</div>
+</body>
+</html>

@@ -1,6 +1,11 @@
 package com.example.capstone_1.service;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.capstone_1.dto.FileResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,26 +27,54 @@ public class S3Service {
 
     public FileResponseDto uploadFile(MultipartFile multipartFile) throws IOException {
         String uuid = UUID.randomUUID().toString();
-        String fileName = uuid + "_" + multipartFile.getOriginalFilename();
+        String fileName = multipartFile.getOriginalFilename();
+        String ext = fileName.split("\\.")[1];
+        String contentType = "";
 
-        // MultipartFile을 File로 변환
-        File tempFile = convertMultipartFileToFile(multipartFile);
+        switch (ext) {
+            case "jpeg":
+                contentType = "image/jpeg";
+                break;
+            case "png":
+                contentType = "image/png";
+                break;
+            case "txt":
+                contentType = "text/plain";
+                break;
+            case "csv":
+                contentType = "text/csv";
+                break;
+            // 다른 파일 형식에 따른 Content-Type도 추가 가능
+        }
 
-        // S3에 파일 업로드
-        amazonS3.putObject(bucket, fileName, tempFile);
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(contentType);
 
-        // S3에 업로드한 파일의 URL 생성
-        String url = amazonS3.getUrl(bucket, fileName).toString();
+        try {
+            // MultipartFile을 File로 변환
+            File tempFile = convertMultipartFileToFile(multipartFile);
 
-        // 임시 파일 삭제
-        tempFile.delete();
+            // S3에 파일 업로드 및 Content-Type 설정
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, tempFile)
+                    .withCannedAcl(CannedAccessControlList.PublicRead)
+                    .withMetadata(metadata));
 
-        FileResponseDto fileResponseDto = new FileResponseDto();
-        fileResponseDto.setFileName(fileName);
-        fileResponseDto.setUuid(uuid);
-        fileResponseDto.setUrl(url);
+            // S3에 업로드한 파일의 URL 생성
+            String url = amazonS3.getUrl(bucket, fileName).toString();
 
-        return fileResponseDto;
+            // 임시 파일 삭제
+            tempFile.delete();
+
+            FileResponseDto fileResponseDto = new FileResponseDto();
+            fileResponseDto.setFileName(fileName);
+            fileResponseDto.setUuid(uuid);
+            fileResponseDto.setUrl(url);
+
+            return fileResponseDto;
+        } catch (SdkClientException e) {
+            e.printStackTrace();
+            return null; // 업로드 실패 시 예외 처리
+        }
     }
 
     // MultipartFile을 File로 변환하는 메서드
@@ -51,5 +84,13 @@ public class S3Service {
             fos.write(multipartFile.getBytes());
         }
         return tempFile;
+    }
+    public void deleteFile(String fileName) {
+        try {
+            amazonS3.deleteObject(bucket, fileName);
+        } catch (AmazonServiceException e) {
+            e.printStackTrace();
+            // 파일 삭제 실패 시 예외 처리
+        }
     }
 }

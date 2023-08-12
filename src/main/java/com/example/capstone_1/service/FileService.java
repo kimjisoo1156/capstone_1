@@ -14,13 +14,19 @@ import java.util.List;
 public class FileService {
     private final FileRepository fileRepository;
 
-    public void save(FileResponseDto fileResponseDto) { //db에 저장하는 부분
-        FileEntity fileEntity = new FileEntity(fileResponseDto.getFileName(), fileResponseDto.getUuid(), fileResponseDto.getUrl());
-        fileRepository.save(fileEntity);
+    public FileEntity save(FileEntity fileEntity) {
+        return fileRepository.save(fileEntity);
     }
 
     public List<FileEntity> getFiles() {
         List<FileEntity> all = fileRepository.findAll();
         return all;
+    }
+    public FileEntity getFileById(Long id) {
+        return fileRepository.findById(id).orElse(null);
+    }
+
+    public void deleteFileById(Long id) {
+        fileRepository.deleteById(id);
     }
 }

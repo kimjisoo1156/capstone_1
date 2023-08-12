@@ -3,9 +3,11 @@ package com.example.capstone_1.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class FileEntity {
     @Id
@@ -27,12 +29,4 @@ public class FileEntity {
         this.s3Url = s3Url;
     }
 
-//    @Override
-//    public String toString() {
-//        return "FileEntity{" +
-//                "id=" + id +
-//                ", fileName='" + fileName + '\'' +
-//                ", s3Url='" + s3Url + '\'' +
-//                '}';
-//    }
 }
