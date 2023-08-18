@@ -29,9 +29,6 @@ public class QFreeBoard extends EntityPathBase<FreeBoard> {
     public final ListPath<FileEntity, QFileEntity> files = this.<FileEntity, QFileEntity>createList("files", FileEntity.class, QFileEntity.class, PathInits.DIRECT2);
 
     //inherited
-    public final BooleanPath isSecret = _super.isSecret;
-
-    //inherited
     public final DateTimePath<java.time.LocalDateTime> modDate = _super.modDate;
 
     //inherited

@@ -61,7 +61,7 @@ public class BoardS3Controller {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/search") //게시판 검색 http://localhost:8080/api/boards/list?page=1&type=w&keyword=user9
+    @GetMapping("/search") //게시판 검색 http://localhost:8080/boards/list?page=1&type=w&keyword=user9
     public ResponseEntity<PageResponseDTO<BoardListReplyCountDTO>> FreeSearch(PageRequestDTO pageRequestDTO) {
         PageResponseDTO<BoardListReplyCountDTO> responseDTO = freeBoardService.listWithReplyCount(pageRequestDTO);
         return ResponseEntity.ok(responseDTO);
@@ -167,7 +167,7 @@ public class BoardS3Controller {
         }
     }
 
-    @PostMapping("/api/delete/{id}")
+    @DeleteMapping("/api/delete/{id}")
     public ResponseEntity<?> deleteFile(@PathVariable Long id) {
         try {
             FileEntity fileEntity = fileService.getFileById(id);
@@ -189,7 +189,9 @@ public class BoardS3Controller {
     }
 
     @PostMapping("/api/edit/{id}")
-    public ResponseEntity<FileResponseDTO> editFile(@PathVariable Long id, @RequestParam("file") MultipartFile multipartFile) {
+    public ResponseEntity<FileResponseDTO> editFile(@PathVariable Long id, @RequestParam("file") MultipartFile multipartFile,
+                                                    @RequestParam("boardType") BoardType boardType,
+                                                    @RequestParam("bno") Long bno) {
         try {
             FileEntity fileEntity = fileService.getFileById(id);
             if (fileEntity == null) {
@@ -204,6 +206,10 @@ public class BoardS3Controller {
 
             fileEntity.setFileName(newFileResponseDto.getFileName());
             fileEntity.setS3Url(newFileResponseDto.getUrl());
+
+            newFileResponseDto.setBoardType(boardType);
+            newFileResponseDto.setBno(bno);
+
             fileService.save(fileEntity);
 
             return ResponseEntity.ok(newFileResponseDto);

@@ -24,7 +24,5 @@ abstract class BaseEntity {
     @Column(name ="moddate" ) //수정 날짜 시간
     private LocalDateTime modDate;
 
-    @Column(name="is_secret")
-    private boolean isSecret; //게시판 공개 여부
 
 }

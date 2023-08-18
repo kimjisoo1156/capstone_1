@@ -27,9 +27,6 @@ public class QFreeReply extends EntityPathBase<FreeReply> {
     public final QFreeBoard freeBoard;
 
     //inherited
-    public final BooleanPath isSecret = _super.isSecret;
-
-    //inherited
     public final DateTimePath<java.time.LocalDateTime> modDate = _super.modDate;
 
     //inherited
