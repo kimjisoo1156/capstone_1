@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 
 public interface FreeBoardService extends BoardService{
 
-
-
     default FreeBoard dtoToEntityFreeBoard(BoardDTO boardDTO){
 
         FreeBoard board = FreeBoard.builder()
@@ -17,18 +15,14 @@ public interface FreeBoardService extends BoardService{
                 .title(boardDTO.getTitle())
                 .content(boardDTO.getContent())
                 .writer(boardDTO.getWriter())
-
+                .secret(boardDTO.getSecret())
                 .build();
 
-        if(boardDTO.getFileNames() != null){
-            boardDTO.getFileNames().forEach(fileName -> {
-                String[] arr = fileName.split("_");
-                board.addImageFreeBoard(arr[0], arr[1]);
-            });
-        }
         return board;
     }
-
+    default FreeBoard findById(Long bno) {
+        return null;
+    }
     default BoardDTO entityToDTOFreeBoard(FreeBoard board) {
 
         BoardDTO boardDTO = BoardDTO.builder()
@@ -38,13 +32,8 @@ public interface FreeBoardService extends BoardService{
                 .writer(board.getWriter())
                 .regDate(board.getRegDate())
                 .modDate(board.getModDate())
+                .secret(board.getSecret())
                 .build();
-
-        List<String> fileNames =
-                board.getImageSetFreeBoard().stream().sorted().map(boardImage ->
-                        boardImage.getUuid()+"_"+boardImage.getFileName()).collect(Collectors.toList());
-
-        boardDTO.setFileNames(fileNames);
 
         return boardDTO;
     }

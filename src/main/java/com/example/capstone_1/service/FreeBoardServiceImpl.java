@@ -37,20 +37,18 @@ public class FreeBoardServiceImpl implements FreeBoardService{
 
         return bno;
     }
-
-
     @Override
     public BoardDTO readOne(Long bno) {
 
-        //board_image까지 조인 처리되는 findByWithImages()를 이용
-        Optional<FreeBoard> result = freeBoardRepository.findByIdWithImagesFreeBoard(bno);
+        Optional<FreeBoard> result = freeBoardRepository.findById(bno);
 
         FreeBoard board = result.orElseThrow();
 
-        BoardDTO boardDTO = entityToDTOFreeBoard(board);
+        BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class);
 
         return boardDTO;
     }
+
 
     @Override
     public void modify(BoardDTO boardDTO) {
@@ -60,16 +58,6 @@ public class FreeBoardServiceImpl implements FreeBoardService{
         FreeBoard board = result.orElseThrow();
 
         board.changeFreeBoard(boardDTO.getTitle(), boardDTO.getContent());
-
-        //첨부파일의 처리
-        board.clearImagesFreeBoard();
-
-        if(boardDTO.getFileNames() != null){
-            for (String fileName : boardDTO.getFileNames()) {
-                String[] arr = fileName.split("_");
-                board.addImageFreeBoard(arr[0], arr[1]);
-            }
-        }
 
         freeBoardRepository.save(board);
 
@@ -115,24 +103,14 @@ public class FreeBoardServiceImpl implements FreeBoardService{
         return PageResponseDTO.<BoardListReplyCountDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
-                .total((int)result.getTotalElements())
+                .total((int) result.getTotalElements())
                 .build();
     }
+
 
     @Override
-    public PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO) {
-        String[] types = pageRequestDTO.getTypes();
-        String keyword = pageRequestDTO.getKeyword();
-        Pageable pageable = pageRequestDTO.getPageable("bno");
-
-        Page<BoardListAllDTO> result = freeBoardRepository.searchWithAll(types, keyword, pageable);
-
-        return PageResponseDTO.<BoardListAllDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .dtoList(result.getContent())
-                .total((int)result.getTotalElements())
-                .build();
+    public FreeBoard findById(Long bno) {
+        return freeBoardRepository.findById(bno).orElse(null);
     }
-
 
 }

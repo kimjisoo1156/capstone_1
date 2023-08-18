@@ -1,10 +1,8 @@
 package com.example.capstone_1.dto;
 
+import com.example.capstone_1.domain.BoardType;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -17,6 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Getter
+@Setter
 public class BoardDTO {
 
     private Long bno;
@@ -37,7 +37,10 @@ public class BoardDTO {
     //첨부파일의 이름들
     private List<String> fileNames;
 
-    private boolean isSecret;
+    private String secret;
+
+
+    private BoardType boardType;
 
 
 }

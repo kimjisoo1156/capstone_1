@@ -3,8 +3,6 @@ package com.example.capstone_1.repository.search;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.domain.QFreeBoard;
 import com.example.capstone_1.domain.QFreeReply;
-import com.example.capstone_1.dto.BoardImageDTO;
-import com.example.capstone_1.dto.BoardListAllDTO;
 import com.example.capstone_1.dto.BoardListReplyCountDTO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
@@ -148,78 +146,78 @@ public class FreeBoardSearchImpl extends QuerydslRepositorySupport implements Fr
         return new PageImpl<>(dtoList, pageable, count);
     }
 
-    @Override
-    public Page<BoardListAllDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
-
-        QFreeBoard board = QFreeBoard.freeBoard;
-        QFreeReply freeReply = QFreeReply.freeReply;
-
-        JPQLQuery<FreeBoard> boardJPQLQuery = from(board);
-        boardJPQLQuery.leftJoin(freeReply).on(freeReply.freeBoard.eq(board)); //left join
-
-        if( (types != null && types.length > 0) && keyword != null ){
-
-            BooleanBuilder booleanBuilder = new BooleanBuilder(); // (
-
-            for(String type: types){
-
-                switch (type){
-                    case "t":
-                        booleanBuilder.or(board.title.contains(keyword));
-                        break;
-                    case "c":
-                        booleanBuilder.or(board.content.contains(keyword));
-                        break;
-                    case "w":
-                        booleanBuilder.or(board.writer.contains(keyword));
-                        break;
-                }
-            }//end for
-            boardJPQLQuery.where(booleanBuilder);
-        }
-
-        boardJPQLQuery.groupBy(board);
-
-        getQuerydsl().applyPagination(pageable, boardJPQLQuery); //paging
-
-
-
-        JPQLQuery<Tuple> tupleJPQLQuery = boardJPQLQuery.select(board, freeReply.countDistinct());
-
-        List<Tuple> tupleList = tupleJPQLQuery.fetch();
-
-        List<BoardListAllDTO> dtoList = tupleList.stream().map(tuple -> {
-
-            FreeBoard board1 = (FreeBoard) tuple.get(board);
-            long replyCount = tuple.get(1,Long.class);
-
-            BoardListAllDTO dto = BoardListAllDTO.builder()
-                    .bno(board1.getBno())
-                    .title(board1.getTitle())
-                    .writer(board1.getWriter())
-                    .regDate(board1.getRegDate())
-                    .replyCount(replyCount)
-                    .build();
-
-            //BoardImage를 BoardImageDTO 처리할 부분
-            List<BoardImageDTO> imageDTOS = board1.getImageSetFreeBoard().stream().sorted()
-                    .map(boardImage -> BoardImageDTO.builder()
-                            .uuid(boardImage.getUuid())
-                            .fileName(boardImage.getFileName())
-                            .ord(boardImage.getOrd())
-                            .build()
-                    ).collect(Collectors.toList());
-
-            dto.setBoardImages(imageDTOS);
-
-            return dto;
-        }).collect(Collectors.toList());
-
-        long totalCount = boardJPQLQuery.fetchCount();
-
-
-        return new PageImpl<>(dtoList, pageable, totalCount);
-    }
+//    @Override
+//    public Page<BoardListAllDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+//
+//        QFreeBoard board = QFreeBoard.freeBoard;
+//        QFreeReply freeReply = QFreeReply.freeReply;
+//
+//        JPQLQuery<FreeBoard> boardJPQLQuery = from(board);
+//        boardJPQLQuery.leftJoin(freeReply).on(freeReply.freeBoard.eq(board)); //left join
+//
+//        if( (types != null && types.length > 0) && keyword != null ){
+//
+//            BooleanBuilder booleanBuilder = new BooleanBuilder(); // (
+//
+//            for(String type: types){
+//
+//                switch (type){
+//                    case "t":
+//                        booleanBuilder.or(board.title.contains(keyword));
+//                        break;
+//                    case "c":
+//                        booleanBuilder.or(board.content.contains(keyword));
+//                        break;
+//                    case "w":
+//                        booleanBuilder.or(board.writer.contains(keyword));
+//                        break;
+//                }
+//            }//end for
+//            boardJPQLQuery.where(booleanBuilder);
+//        }
+//
+//        boardJPQLQuery.groupBy(board);
+//
+//        getQuerydsl().applyPagination(pageable, boardJPQLQuery); //paging
+//
+//
+//
+//        JPQLQuery<Tuple> tupleJPQLQuery = boardJPQLQuery.select(board, freeReply.countDistinct());
+//
+//        List<Tuple> tupleList = tupleJPQLQuery.fetch();
+//
+//        List<BoardListAllDTO> dtoList = tupleList.stream().map(tuple -> {
+//
+//            FreeBoard board1 = (FreeBoard) tuple.get(board);
+//            long replyCount = tuple.get(1,Long.class);
+//
+//            BoardListAllDTO dto = BoardListAllDTO.builder()
+//                    .bno(board1.getBno())
+//                    .title(board1.getTitle())
+//                    .writer(board1.getWriter())
+//                    .regDate(board1.getRegDate())
+//                    .replyCount(replyCount)
+//                    .build();
+//
+//            //BoardImage를 BoardImageDTO 처리할 부분
+//            List<BoardImageDTO> imageDTOS = board1.getImageSetFreeBoard().stream().sorted()
+//                    .map(boardImage -> BoardImageDTO.builder()
+//                            .uuid(boardImage.getUuid())
+//                            .fileName(boardImage.getFileName())
+//                            .ord(boardImage.getOrd())
+//                            .build()
+//                    ).collect(Collectors.toList());
+//
+//            dto.setBoardImages(imageDTOS);
+//
+//            return dto;
+//        }).collect(Collectors.toList());
+//
+//        long totalCount = boardJPQLQuery.fetchCount();
+//
+//
+//        return new PageImpl<>(dtoList, pageable, totalCount);
+//    }
 
 }
 

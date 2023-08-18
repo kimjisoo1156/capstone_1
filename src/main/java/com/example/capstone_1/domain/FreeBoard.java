@@ -5,6 +5,7 @@ import org.hibernate.annotations.BatchSize;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -12,7 +13,6 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "imageSetFreeBoard")
 public class FreeBoard extends BaseEntity{  //자유게시판
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,35 +27,13 @@ public class FreeBoard extends BaseEntity{  //자유게시판
     @Column(length = 50, nullable = false)
     private String writer;
 
+    @OneToMany(mappedBy = "freeBoard", cascade = CascadeType.ALL)
+    private List<FileEntity> files;
+
+    private String secret;
     public void changeFreeBoard(String title, String content){
         this.title = title;
         this.content = content;
-    }
-
-    @OneToMany(mappedBy = "freeBoard",
-            cascade = {CascadeType.ALL},
-            fetch = FetchType.LAZY,
-            orphanRemoval = true)
-    @Builder.Default
-    @BatchSize(size = 20)
-    private Set<BoardImage> imageSetFreeBoard = new HashSet<>();
-
-    public void addImageFreeBoard(String uuid, String fileName){
-
-        BoardImage boardImage = BoardImage.builder()
-                .uuid(uuid)
-                .fileName(fileName)
-                .freeBoard(this)
-                .ord(imageSetFreeBoard.size())
-                .build();
-        imageSetFreeBoard.add(boardImage);
-    }
-
-    public void clearImagesFreeBoard() {
-
-        imageSetFreeBoard.forEach(boardImage -> boardImage.changeBoardFreeBoard(null));
-
-        this.imageSetFreeBoard.clear();
     }
 
 }

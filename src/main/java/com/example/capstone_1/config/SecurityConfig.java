@@ -56,11 +56,13 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/auth/**","/hello").permitAll()
-                        .requestMatchers("/boards/list", "/boards/search","/board/**","/css/**", "/js/**","/templates/board/**","/upload/**","/view/{fileName}","/remove/{fileName}").permitAll()
+                        .requestMatchers("/auth/**","/hello","/boards/list","/boards/search","/boards/api/**").permitAll()
+                        .requestMatchers("/boards/**","/board/**","/css/**", "/js/**","/templates/board/**","/upload/**","/view/{fileName}","/remove/{fileName}").permitAll()
                         .requestMatchers("/boards/register","/replies/**").hasAnyRole("USER","ADMIN") //댓글 권한 혹은 작성자 문제로 .. 화면에 안들어가는 예외가 발생함
-                        .requestMatchers("/boards/modify/{bno}").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/boards/remove/{bno}").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/boards/free/**").hasAnyRole("USER","ADMIN")
+
+
+
                         .anyRequest().authenticated()
                 )
 
@@ -68,13 +70,6 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
-//                // enable h2-console
-//                .headers(headers ->
-//                        headers.frameOptions(options ->
-//                                options.sameOrigin()
-//                        )
-//                )
 
                 .apply(new JwtSecurityConfig(tokenProvider));
         return http.build();

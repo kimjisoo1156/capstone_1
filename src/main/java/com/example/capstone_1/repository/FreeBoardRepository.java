@@ -10,8 +10,5 @@ import java.util.Optional;
 
 public interface FreeBoardRepository extends JpaRepository<FreeBoard, Long>, FreeBoardSearch {
 
-    @EntityGraph(attributePaths = {"imageSetFreeBoard"})
-    @Query("select b from FreeBoard b where b.bno =:bno")
-    Optional<FreeBoard> findByIdWithImagesFreeBoard(Long bno);
 
 }

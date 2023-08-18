@@ -26,7 +26,7 @@ public class QFreeBoard extends EntityPathBase<FreeBoard> {
 
     public final StringPath content = createString("content");
 
-    public final SetPath<BoardImage, QBoardImage> imageSetFreeBoard = this.<BoardImage, QBoardImage>createSet("imageSetFreeBoard", BoardImage.class, QBoardImage.class, PathInits.DIRECT2);
+    public final ListPath<FileEntity, QFileEntity> files = this.<FileEntity, QFileEntity>createList("files", FileEntity.class, QFileEntity.class, PathInits.DIRECT2);
 
     //inherited
     public final BooleanPath isSecret = _super.isSecret;
@@ -36,6 +36,8 @@ public class QFreeBoard extends EntityPathBase<FreeBoard> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> regDate = _super.regDate;
+
+    public final StringPath secret = createString("secret");
 
     public final StringPath title = createString("title");
 
