@@ -18,10 +18,6 @@ public interface BoardService {
     //댓글의 숫자까지 처리
     PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO);
 
-//    //게시글의 이미지와 댓글의 숫자까지 처리
-//    PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO);
-//
-//
 
 
 }

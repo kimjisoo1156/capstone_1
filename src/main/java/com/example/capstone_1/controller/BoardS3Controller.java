@@ -1,14 +1,12 @@
 package com.example.capstone_1.controller;
 
-import com.example.capstone_1.domain.BoardType;
-import com.example.capstone_1.domain.FileEntity;
-import com.example.capstone_1.domain.FreeBoard;
+import com.example.capstone_1.domain.*;
 import com.example.capstone_1.dto.*;
+import com.example.capstone_1.repository.BankBoardRepository;
 import com.example.capstone_1.repository.FreeBoardRepository;
-import com.example.capstone_1.service.FileService;
-import com.example.capstone_1.service.FreeBoardService;
-import com.example.capstone_1.service.ReplyService;
-import com.example.capstone_1.service.S3Service;
+import com.example.capstone_1.repository.NoticeBoardRepository;
+import com.example.capstone_1.repository.ReportBoardRepository;
+import com.example.capstone_1.service.*;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,18 +31,48 @@ public class BoardS3Controller {
     private final FreeBoardService freeBoardService;
     private final FreeBoardRepository freeBoardRepository;
     private final ReplyService freeReplyService;
+
+
+    private final NoticeBoardService noticeBoardService;
+    private final NoticeBoardRepository noticeBoardRepository;
+    private final ReplyService noticeReplyService;
+
+    private final BankBoardService bankBoardService;
+    private final BankBoardRepository bankBoardRepository;
+    private final ReplyService bankReplyService;
+
+    private final ReportBoardService reportBoardService;
+    private final ReportBoardRepository reportBoardRepository;
+    private final ReplyService reportReplyService;
+
     private final S3Service s3Service;
     private final FileService fileService;
 
 
+    private final BoardControllerService boardControllerService;
+
     public BoardS3Controller(FreeBoardService freeBoardService,
                              FreeBoardRepository freeBoardRepository, @Qualifier("freeReplyServiceImpl") ReplyService freeReplyService,
-                             S3Service s3Service, FileService fileService) {
+                             NoticeBoardService noticeBoardService, NoticeBoardRepository noticeBoardRepository,
+                             @Qualifier("noticeReplyServiceImpl") ReplyService noticeReplyService, BankBoardService bankBoardService, BankBoardRepository bankBoardRepository,
+                             @Qualifier("bankReplyServiceImpl") ReplyService bankReplyService, ReportBoardService reportBoardService, ReportBoardRepository reportBoardRepository,
+                             @Qualifier("reportReplyServiceImpl") ReplyService reportReplyService, S3Service s3Service, FileService fileService, BoardControllerService boardControllerService) {
+
         this.freeBoardService = freeBoardService;
         this.freeBoardRepository = freeBoardRepository;
         this.freeReplyService = freeReplyService;
+        this.noticeBoardService = noticeBoardService;
+        this.noticeBoardRepository = noticeBoardRepository;
+        this.noticeReplyService = noticeReplyService;
+        this.bankBoardService = bankBoardService;
+        this.bankBoardRepository = bankBoardRepository;
+        this.bankReplyService = bankReplyService;
+        this.reportBoardService = reportBoardService;
+        this.reportBoardRepository = reportBoardRepository;
+        this.reportReplyService = reportReplyService;
         this.s3Service = s3Service;
         this.fileService = fileService;
+        this.boardControllerService = boardControllerService;
     }
 
 
@@ -68,29 +96,29 @@ public class BoardS3Controller {
     }
 
 
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PostMapping("/free/register") //게시판 등록 http://localhost:8080/api/boards/register
-    public ResponseEntity<Long> FreeRegisterPost(@Valid @RequestBody BoardDTO boardDTO, BindingResult bindingResult) {
-
-
-        if (bindingResult.hasErrors()) {
-            // 유효성 검사 실패 시 오류 응답
-            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-            for (FieldError fieldError : fieldErrors) {
-                String fieldName = fieldError.getField();
-                String errorMessage = fieldError.getDefaultMessage();
-                // 에러가 발생한 필드와 에러 메시지를 로깅하거나 사용자에게 알림
-                System.out.println("에러 발생 필드: " + fieldName);
-                System.out.println("에러 메시지: " + errorMessage);
-            }
-            return ResponseEntity.badRequest().build();
-        }
-
-        //boardDTO.setBoardType(BoardType.FREE);
-        Long bno = freeBoardService.register(boardDTO);
-
-        return ResponseEntity.ok(bno);
-    }
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+//    @PostMapping("/free/register") //게시판 등록 http://localhost:8080/api/boards/register
+//    public ResponseEntity<Long> FreeRegisterPost(@Valid @RequestBody BoardDTO boardDTO, BindingResult bindingResult) {
+//
+//
+//        if (bindingResult.hasErrors()) {
+//            // 유효성 검사 실패 시 오류 응답
+//            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+//            for (FieldError fieldError : fieldErrors) {
+//                String fieldName = fieldError.getField();
+//                String errorMessage = fieldError.getDefaultMessage();
+//                // 에러가 발생한 필드와 에러 메시지를 로깅하거나 사용자에게 알림
+//                System.out.println("에러 발생 필드: " + fieldName);
+//                System.out.println("에러 메시지: " + errorMessage);
+//            }
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        //boardDTO.setBoardType(BoardType.FREE);
+//        Long bno = freeBoardService.register(boardDTO);
+//
+//        return ResponseEntity.ok(bno);
+//    }
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/free/modify/{bno}") //수정 api -> http://localhost:8080/api/boards/modify/1
     public ResponseEntity<String> FreeModify(@PathVariable Long bno,
@@ -108,30 +136,150 @@ public class BoardS3Controller {
 
         return ResponseEntity.ok("Board modified successfully.");
     }
+
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/free/remove/{bno}") //게시판 삭제 -> http://localhost:8080/api/boards/remove/1
-    public ResponseEntity<String> FreeRemoveBoard(@PathVariable Long bno) {
-
-        // 해당 게시물 정보를 가져옴
-        FreeBoard freeBoard = freeBoardRepository.findById(bno)
-                .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
-
-        // 연결된 이미지 파일들도 함께 삭제
-        List<FileEntity> imageFiles = freeBoard.getFiles();
-        if (imageFiles != null) {
-            for (FileEntity fileEntity : imageFiles) {
-                s3Service.deleteFile(fileEntity.getFileName());
-                fileService.deleteFileById(fileEntity.getId());
-            }
-        }
-
-        //게시물에 있는 댓글들 삭제하려면, 해당 게시판의 댓글 번호들을 알아야 겠지.
-        freeReplyService.removeRepliesByBoardId(bno);
-
-        freeBoardService.remove(bno); //게시물 삭제
-
-        return ResponseEntity.ok("Board removed successfully.");
+    @PostMapping("/register")
+    public ResponseEntity<Long> registerBoard(@RequestBody BoardDTO boardDTO) {
+        BoardType boardType = boardDTO.getBoardType();
+        Long bno = boardControllerService.registerBoard(boardType, boardDTO);
+        return ResponseEntity.ok(bno);
     }
+
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PostMapping("/register/bank")
+    public ResponseEntity<Long> registerBankBoard(@RequestBody BankBoardDTO bankBoardDTO) {
+        BoardType boardType = bankBoardDTO.getBoardType();
+        Long bno = boardControllerService.registerBankBoard(boardType, bankBoardDTO);
+        return ResponseEntity.ok(bno);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/remove/{boardType}/{bno}")
+    public ResponseEntity<String> removeBoard(@PathVariable String boardType, @PathVariable Long bno) {
+        BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열을 enum으로 변환
+        boardControllerService.removeBoard(enumBoardType, bno); // 공통 로직 호출
+        return ResponseEntity.ok(enumBoardType + " board removed successfully.");
+    }
+
+
+
+
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+//    @DeleteMapping("/free/remove/{bno}") //게시판 삭제 -> http://localhost:8080/api/boards/remove/1
+//    public ResponseEntity<String> FreeRemoveBoard(@PathVariable Long bno) {
+//
+//        // 해당 게시물 정보를 가져옴
+//        FreeBoard freeBoard = freeBoardRepository.findById(bno)
+//                .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+//
+//        // 연결된 이미지 파일들도 함께 삭제
+//        List<FileEntity> imageFiles = freeBoard.getFiles();
+//        if (imageFiles != null) {
+//            for (FileEntity fileEntity : imageFiles) {
+//                s3Service.deleteFile(fileEntity.getFileName());
+//                fileService.deleteFileById(fileEntity.getId());
+//            }
+//        }
+//
+//        //게시물에 있는 댓글들 삭제하려면, 해당 게시판의 댓글 번호들을 알아야 겠지.
+//        freeReplyService.removeRepliesByBoardId(bno);
+//
+//        freeBoardService.remove(bno); //게시물 삭제
+//
+//        return ResponseEntity.ok("Board removed successfully.");
+//    }
+
+    //이건 게시판 url패턴으로 나누어서 각각 컨트롤러 구현해서 삭제해야함
+
+    //아래는 게시판 종류와 게시판 번호를 줘서 여러개의 게시판을 하나의 컨트롤러로 함.
+
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+//    @DeleteMapping("/remove/{boardType}/{bno}") // 게시물 삭제 -> http://localhost:8080/api/boards/free/1
+//    public ResponseEntity<String> removeBoard(@PathVariable String boardType, @PathVariable Long bno) {
+//        if ("FREE".equals(boardType)) {
+//
+//            FreeBoard freeBoard = freeBoardRepository.findById(bno)
+//                    .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+//
+//            // 연결된 이미지 파일들도 함께 삭제
+//            List<FileEntity> imageFiles = freeBoard.getFiles();
+//            if (imageFiles != null) {
+//                for (FileEntity fileEntity : imageFiles) {
+//                    s3Service.deleteFile(fileEntity.getFileName());
+//                    fileService.deleteFileById(fileEntity.getId());
+//                }
+//            }
+//
+//            freeReplyService.removeRepliesByBoardId(bno);  //게시물에 있는 댓글들 삭제하려면, 해당 게시판의 댓글 번호들을 알아야 겠지.
+//            freeBoardService.remove(bno);  //게시물 삭제
+//            return ResponseEntity.ok("Free board removed successfully.");
+//
+//        } else if ("NOTICE".equals(boardType)) {
+//
+//            NoticeBoard noticeBoard = noticeBoardRepository.findById(bno)
+//                    .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+//
+//            List<FileEntity> imageFiles = noticeBoard.getFiles();
+//            if (imageFiles != null) {
+//                for (FileEntity fileEntity : imageFiles) {
+//                    s3Service.deleteFile(fileEntity.getFileName());
+//                    fileService.deleteFileById(fileEntity.getId());
+//                }
+//            }
+//
+//            noticeReplyService.removeRepliesByBoardId(bno);
+//            noticeBoardService.remove(bno);
+//            return ResponseEntity.ok("Notice board removed successfully.");
+//
+//
+//        }else if ("REPORT".equals(boardType)) {
+//
+//            ReportBoard reportBoard = reportBoardRepository.findById(bno)
+//                    .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+//
+//            List<FileEntity> imageFiles = reportBoard.getFiles();
+//            if (imageFiles != null) {
+//                for (FileEntity fileEntity : imageFiles) {
+//                    s3Service.deleteFile(fileEntity.getFileName());
+//                    fileService.deleteFileById(fileEntity.getId());
+//                }
+//            }
+//
+//            reportReplyService.removeRepliesByBoardId(bno);
+//            reportBoardService.remove(bno);
+//            return ResponseEntity.ok("Report board removed successfully.");
+//
+//        }else if ("BANK".equals(boardType)) {
+//
+//            BankBoard bankBoard = bankBoardRepository.findById(bno)
+//                    .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+//
+//            List<FileEntity> imageFiles = bankBoard.getFiles();
+//            if (imageFiles != null) {
+//                for (FileEntity fileEntity : imageFiles) {
+//                    s3Service.deleteFile(fileEntity.getFileName());
+//                    fileService.deleteFileById(fileEntity.getId());
+//                }
+//            }
+//
+//            bankReplyService.removeRepliesByBoardId(bno);
+//            bankBoardService.remove(bno);
+//            return ResponseEntity.ok("Bank board removed successfully.");
+//
+//        }
+//
+//        return ResponseEntity.badRequest().body("Invalid board type: " + boardType);
+//    }
+
+
+
+
+
+
+
+
+
+
 
 
     @PostMapping(value="/api/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -151,7 +299,10 @@ public class BoardS3Controller {
                     fileResponseDto.getUuid(),
                     fileResponseDto.getUrl(),
                     boardType,
-                    freeBoard
+                    freeBoard,
+                    null,
+                    null,
+                    null
             );
 
             fileService.save(fileEntity);
@@ -219,12 +370,10 @@ public class BoardS3Controller {
         }
     }
 
-    @GetMapping("/api/files") //업로드한 파일 정보 프론트에게 json형태로 주는 컨트롤러
-    public ResponseEntity<List<FileEntity>> getFiles() {
-        List<FileEntity> fileList = fileService.getFiles();
-        return ResponseEntity.ok(fileList);
-    }
-
-
+//    @GetMapping("/api/files") //업로드한 파일 정보 프론트에게 json형태로 주는 컨트롤러
+//    public ResponseEntity<List<FileEntity>> getFiles() {
+//        List<FileEntity> fileList = fileService.getFiles();
+//        return ResponseEntity.ok(fileList);
+//    }
 
 }

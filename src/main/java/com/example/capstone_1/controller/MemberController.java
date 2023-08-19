@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
-public class MemberController {
+public class MemberController {  //비밀번호 찾기 api구현
     private final MemberService memberService;
 
 //    @GetMapping("/me")

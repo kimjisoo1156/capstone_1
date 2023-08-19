@@ -22,6 +22,8 @@ public class QFileEntity extends EntityPathBase<FileEntity> {
 
     public static final QFileEntity fileEntity = new QFileEntity("fileEntity");
 
+    public final QBankBoard bankBoard;
+
     public final EnumPath<BoardType> boardType = createEnum("boardType", BoardType.class);
 
     public final StringPath fileName = createString("fileName");
@@ -29,6 +31,10 @@ public class QFileEntity extends EntityPathBase<FileEntity> {
     public final QFreeBoard freeBoard;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final QNoticeBoard noticeBoard;
+
+    public final QReportBoard reportBoard;
 
     public final StringPath s3Url = createString("s3Url");
 
@@ -52,7 +58,10 @@ public class QFileEntity extends EntityPathBase<FileEntity> {
 
     public QFileEntity(Class<? extends FileEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.bankBoard = inits.isInitialized("bankBoard") ? new QBankBoard(forProperty("bankBoard")) : null;
         this.freeBoard = inits.isInitialized("freeBoard") ? new QFreeBoard(forProperty("freeBoard")) : null;
+        this.noticeBoard = inits.isInitialized("noticeBoard") ? new QNoticeBoard(forProperty("noticeBoard")) : null;
+        this.reportBoard = inits.isInitialized("reportBoard") ? new QReportBoard(forProperty("reportBoard")) : null;
     }
 
 }

@@ -31,11 +31,30 @@ public class FileEntity {
     @JoinColumn(name = "free_board_id") // Board 엔터티와의 관계를 나타내는 필드
     private FreeBoard freeBoard; //자유게시판 번호
 
-    public FileEntity(String fileName, String uuid, String s3Url, BoardType boardType, FreeBoard freeBoard) {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_board_id")
+    private BankBoard bankBoard;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "notice_board_id")
+    private NoticeBoard noticeBoard;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "report_board_id")
+    private ReportBoard reportBoard;
+
+    public FileEntity(String fileName, String uuid, String s3Url, BoardType boardType,
+                      FreeBoard freeBoard, BankBoard bankBoard, NoticeBoard noticeBoard,
+                      ReportBoard reportBoard) {
         this.fileName = fileName;
         this.uuid = uuid;
         this.s3Url = s3Url;
         this.boardType = boardType;
         this.freeBoard = freeBoard;
+        this.bankBoard = bankBoard;
+        this.noticeBoard = noticeBoard;
+        this.reportBoard = reportBoard;
+
     }
 }
