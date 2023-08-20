@@ -1,5 +1,6 @@
 package com.example.capstone_1.dto;
 
+import com.example.capstone_1.domain.BoardType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -22,4 +23,10 @@ public class BankBoardDTO extends BoardDTO {
     @NotBlank
     private String accountNumber; // 계좌번호
 
+
+    // 상위 클래스의 필드를 사용하기 위해 오버라이드
+    @Override
+    public BoardType getBoardType() {
+        return super.getBoardType();
+    }
 }

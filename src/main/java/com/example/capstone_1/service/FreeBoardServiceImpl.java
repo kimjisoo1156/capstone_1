@@ -1,5 +1,6 @@
 package com.example.capstone_1.service;
 
+import com.example.capstone_1.domain.BoardType;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.dto.*;
 import com.example.capstone_1.repository.FreeBoardRepository;
@@ -50,18 +51,18 @@ public class FreeBoardServiceImpl implements FreeBoardService{
     }
 
 
-    @Override
-    public void modify(BoardDTO boardDTO) {
-
-        Optional<FreeBoard> result = freeBoardRepository.findById(boardDTO.getBno());
-
-        FreeBoard board = result.orElseThrow();
-
-        board.changeFreeBoard(boardDTO.getTitle(), boardDTO.getContent());
-
-        freeBoardRepository.save(board);
-
-    }
+//    @Override
+//    public void modify(BoardDTO boardDTO) {
+//        if (boardDTO.getBoardType() == BoardType.FREE) {
+//            Optional<FreeBoard> result = freeBoardRepository.findById(boardDTO.getBno());
+//
+//            FreeBoard board = result.orElseThrow();
+//
+//            board.changeFreeBoard(boardDTO.getTitle(), boardDTO.getContent());
+//
+//            freeBoardRepository.save(board);
+//        }
+//    }
 
     @Override
     public void remove(Long bno) {
@@ -111,6 +112,12 @@ public class FreeBoardServiceImpl implements FreeBoardService{
     @Override
     public FreeBoard findById(Long bno) {
         return freeBoardRepository.findById(bno).orElse(null);
+    }
+
+    @Override
+    public void modify(FreeBoard freeBoard, BoardDTO boardDTO) {
+        freeBoard.changeFreeBoard(boardDTO.getTitle(), boardDTO.getContent());
+        freeBoardRepository.save(freeBoard);
     }
 
 }

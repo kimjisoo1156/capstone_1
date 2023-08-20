@@ -1,5 +1,6 @@
 package com.example.capstone_1.service;
 
+import com.example.capstone_1.domain.BoardType;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.domain.ReportBoard;
 import com.example.capstone_1.dto.*;
@@ -49,16 +50,19 @@ public class ReportBoardServiceImpl implements ReportBoardService{
         return boardDTO;
     }
 
-    @Override
-    public void modify(BoardDTO boardDTO) {
-        Optional<ReportBoard> result = reportBoardRepository.findById(boardDTO.getBno());
-
-        ReportBoard board = result.orElseThrow();
-
-        board.changeReportBoard(boardDTO.getTitle(), boardDTO.getContent());
-
-        reportBoardRepository.save(board);
-    }
+//    @Override
+//    public void modify(BoardDTO boardDTO) {
+//        if (boardDTO.getBoardType() == BoardType.REPORT) {
+//            Optional<ReportBoard> result = reportBoardRepository.findById(boardDTO.getBno());
+//
+//            ReportBoard board = result.orElseThrow();
+//
+//            board.changeReportBoard(boardDTO.getTitle(), boardDTO.getContent());
+//
+//            reportBoardRepository.save(board);
+//        }
+//
+//    }
 
     @Override
     public void remove(Long bno) {
@@ -99,6 +103,12 @@ public class ReportBoardServiceImpl implements ReportBoardService{
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
                 .build();
+    }
+
+    @Override
+    public void modify(ReportBoard reportBoard, BoardDTO boardDTO) {
+        reportBoard.changeReportBoard(boardDTO.getTitle(), boardDTO.getContent());
+        reportBoardRepository.save(reportBoard);
     }
 
     @Override

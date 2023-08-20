@@ -21,7 +21,7 @@ public interface NoticeBoardService extends BoardService {
 
         return board;
     }
-
+    void modify(NoticeBoard noticeBoard, BoardDTO boardDTO);
     default BoardDTO entityToDTONoticeBoard(NoticeBoard board) {
 
         BoardDTO boardDTO = BoardDTO.builder()

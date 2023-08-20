@@ -9,4 +9,6 @@ public interface BoardControllerService {
     Long registerBoard(BoardType boardType, BoardDTO boardDTO);
 
     Long registerBankBoard(BoardType boardType, BankBoardDTO bankBoardDTO);
+    void modifyBoard(BoardType boardType, Long bno, BoardDTO boardDTO);
+
 }

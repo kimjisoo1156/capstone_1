@@ -130,5 +130,33 @@ public class BoardControllerServiceImpl implements BoardControllerService{
         }
     }
 
+    @Override
+    public void modifyBoard(BoardType boardType, Long bno, BoardDTO boardDTO) {
+        switch (boardType) {
+            case FREE:
+                FreeBoard freeBoard = freeBoardService.findById(bno);
+                if (freeBoard != null) {
+                    freeBoardService.modify(freeBoard, boardDTO);
+                }
+                break;
+            case NOTICE:
+                NoticeBoard noticeBoard = noticeBoardService.findById(bno);
+                if (noticeBoard != null) {
+                    noticeBoardService.modify(noticeBoard, boardDTO);
+                }
+                break;
+            case REPORT:
+                ReportBoard reportBoard = reportBoardService.findById(bno);
+                if (reportBoard != null) {
+                    reportBoardService.modify(reportBoard, boardDTO);
+                }
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid board type: " + boardType);
+        }
+    }
+
+
 
 }

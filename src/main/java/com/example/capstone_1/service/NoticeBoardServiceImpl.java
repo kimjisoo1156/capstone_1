@@ -1,5 +1,6 @@
 package com.example.capstone_1.service;
 
+import com.example.capstone_1.domain.BoardType;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.domain.NoticeBoard;
 import com.example.capstone_1.dto.*;
@@ -50,16 +51,19 @@ public class NoticeBoardServiceImpl implements NoticeBoardService{
         return boardDTO;
     }
 
-    @Override
-    public void modify(BoardDTO boardDTO) {
-        Optional<NoticeBoard> result = noticeBoardRepository.findById(boardDTO.getBno());
-
-        NoticeBoard board = result.orElseThrow();
-
-        board.changeNoticeBoard(boardDTO.getTitle(), boardDTO.getContent());
-
-        noticeBoardRepository.save(board);
-    }
+//    @Override
+//    public void modify(BoardDTO boardDTO) {
+//        if (boardDTO.getBoardType() == BoardType.NOTICE) {
+//            Optional<NoticeBoard> result = noticeBoardRepository.findById(boardDTO.getBno());
+//
+//            NoticeBoard board = result.orElseThrow();
+//
+//            board.changeNoticeBoard(boardDTO.getTitle(), boardDTO.getContent());
+//
+//            noticeBoardRepository.save(board);
+//        }
+//
+//    }
 
     @Override
     public void remove(Long bno) {
@@ -98,6 +102,12 @@ public class NoticeBoardServiceImpl implements NoticeBoardService{
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
                 .build();
+    }
+
+    @Override
+    public void modify(NoticeBoard noticeBoard, BoardDTO boardDTO) {
+        noticeBoard.changeNoticeBoard(boardDTO.getTitle(), boardDTO.getContent());
+        noticeBoardRepository.save(noticeBoard);
     }
 
     @Override

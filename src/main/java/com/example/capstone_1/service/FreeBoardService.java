@@ -23,6 +23,8 @@ public interface FreeBoardService extends BoardService{
     default FreeBoard findById(Long bno) {
         return null;
     }
+
+    void modify(FreeBoard freeBoard, BoardDTO boardDTO);
     default BoardDTO entityToDTOFreeBoard(FreeBoard board) {
 
         BoardDTO boardDTO = BoardDTO.builder()

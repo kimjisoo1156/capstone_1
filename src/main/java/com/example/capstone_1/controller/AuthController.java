@@ -28,7 +28,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.signup(memberRequestDto));
     }
 
-    @PostMapping("/login") //로그인 dto따로 만들어야 함.멤버리퀘스트 디티오를 로그인 디티오로 바꿈.
+    @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
         return ResponseEntity.ok(authService.login(loginDto));
     }

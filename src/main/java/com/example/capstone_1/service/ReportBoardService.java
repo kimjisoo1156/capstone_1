@@ -22,7 +22,7 @@ public interface ReportBoardService extends BoardService{
 
         return board;
     }
-
+    void modify(ReportBoard reportBoard, BoardDTO boardDTO);
     default BoardDTO entityToDTOReportBoard(ReportBoard board) {
 
         BoardDTO boardDTO = BoardDTO.builder()
