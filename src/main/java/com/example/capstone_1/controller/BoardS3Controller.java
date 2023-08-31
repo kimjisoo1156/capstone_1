@@ -74,27 +74,37 @@ public class BoardS3Controller {
     }
 
 
-    @GetMapping("/list") //목록api 페이지 수 넣어서 해당 페이지 게시물 10개씩 데이터 보여주기   http://localhost:8080/boards/list?page=1
-    public ResponseEntity<PageResponseDTO<BoardListReplyCountDTO>> FreeList(@RequestParam(defaultValue = "1") int page, PageRequestDTO pageRequestDTO) {
+//    @GetMapping("/list") //목록api 페이지 수 넣어서 해당 페이지 게시물 10개씩 데이터 보여주기   http://localhost:8080/boards/list?page=1
+
+    @GetMapping("/{boardType}/list")
+    public ResponseEntity<PageResponseDTO<BoardListReplyCountDTO>> listBoards(
+            @PathVariable String boardType,
+            @RequestParam(defaultValue = "1") int page,
+            PageRequestDTO pageRequestDTO) {
 
         int size = 11;
 
         pageRequestDTO.setPage(page);
         pageRequestDTO.setSize(size);
 
-        PageResponseDTO<BoardListReplyCountDTO> responseDTO = freeBoardService.listWithReplyCount(pageRequestDTO);
+        PageResponseDTO<BoardListReplyCountDTO> responseDTO = boardControllerService.listWithReplyCount(boardType, pageRequestDTO);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+    @GetMapping("/{boardType}/search")
+    public ResponseEntity<PageResponseDTO<BoardListReplyCountDTO>> searchBoards(
+            @PathVariable String boardType,
+            PageRequestDTO pageRequestDTO) {
+
+        PageResponseDTO<BoardListReplyCountDTO> responseDTO = boardControllerService.searchBoards(boardType, pageRequestDTO);
 
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/search") //게시판 검색 http://localhost:8080/boards/list?page=1&type=w&keyword=user9
-    public ResponseEntity<PageResponseDTO<BoardListReplyCountDTO>> FreeSearch(PageRequestDTO pageRequestDTO) {
-        PageResponseDTO<BoardListReplyCountDTO> responseDTO = freeBoardService.listWithReplyCount(pageRequestDTO);
-        return ResponseEntity.ok(responseDTO);
-    }
+
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PutMapping("/modify/{boardType}/{bno}") // 수정 api -> http://localhost:8080/api/boards/modify/free/1
+    @PutMapping("/modify/{boardType}/{bno}") // 수정 api
     public ResponseEntity<String> modifyBoard(@PathVariable String boardType,
                                               @PathVariable Long bno,
                                               @RequestBody @Valid BoardDTO boardDTO,

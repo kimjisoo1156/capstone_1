@@ -1,8 +1,7 @@
 package com.example.capstone_1.service;
 
 import com.example.capstone_1.domain.*;
-import com.example.capstone_1.dto.BankBoardDTO;
-import com.example.capstone_1.dto.BoardDTO;
+import com.example.capstone_1.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -157,6 +156,35 @@ public class BoardControllerServiceImpl implements BoardControllerService{
         }
     }
 
+    @Override
+    public PageResponseDTO<BoardListReplyCountDTO> searchBoards(String boardType, PageRequestDTO pageRequestDTO) {
+        if ("FREE".equals(boardType)) {
+            return freeBoardService.listWithReplyCount(pageRequestDTO);
+        } else if ("BANK".equals(boardType)) {
+            return bankBoardService.listWithReplyCount(pageRequestDTO);
+        } else if ("NOTICE".equals(boardType)) {
+            return noticeBoardService.listWithReplyCount(pageRequestDTO);
+        }  else if ("REPORT".equals(boardType)) {
+            return reportBoardService.listWithReplyCount(pageRequestDTO);
+        } else {
+            throw new IllegalArgumentException("Invalid board type: " + boardType);
+        }
+    }
+
+    @Override
+    public PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(String boardType, PageRequestDTO pageRequestDTO) {
+        if ("FREE".equals(boardType)) {
+            return freeBoardService.listWithReplyCount(pageRequestDTO);
+        } else if ("BANK".equals(boardType)) {
+            return bankBoardService.listWithReplyCount(pageRequestDTO);
+        } else if ("NOTICE".equals(boardType)) {
+            return noticeBoardService.listWithReplyCount(pageRequestDTO);
+        }else if ("REPORT".equals(boardType)) {
+                return reportBoardService.listWithReplyCount(pageRequestDTO);
+        } else {
+            throw new IllegalArgumentException("Invalid board type: " + boardType);
+        }
+    }
 
 
 }

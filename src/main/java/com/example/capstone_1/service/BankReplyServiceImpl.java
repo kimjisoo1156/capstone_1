@@ -30,9 +30,9 @@ public class BankReplyServiceImpl implements BankReplyService{
 
     @Override
     public Long register(ReplyDTO replyDTO) {
-        BankReply reply = modelMapper.map(replyDTO, BankReply.class);
         String loggedInUserEmail = userService.getLoggedInUserEmail();
         replyDTO.setReplyer(loggedInUserEmail);
+        BankReply reply = modelMapper.map(replyDTO, BankReply.class);
         Long rno = bankReplyRepository.save(reply).getRno();
 
         return rno;
