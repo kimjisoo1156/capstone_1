@@ -28,7 +28,7 @@ public class MemberController { //임시 비밀번호 수정
 //    public ResponseEntity<MemberResponseDto> findMemberInfoByEmail(@PathVariable String email) {
 //        return ResponseEntity.ok(memberService.findMemberInfoByEmail(email));
 //    }
-    @PostMapping("/reset-password")
+    @PostMapping(value = "/reset-password", produces="application/json; charset=utf8")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
         // 1. 현재 사용자의 이메일 주소 가져오기
         String userEmail = userService.getLoggedInUserEmail();
