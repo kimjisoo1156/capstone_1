@@ -18,13 +18,13 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/css/**", "/js/**","/templates/board/**")
                 .addResourceLocations("classpath:/static/css/", "classpath:/static/js/","classpath:/static/templates/board/");
     }
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        // 기존의 StringHttpMessageConverter를 제거
-        converters.removeIf(converter -> converter instanceof StringHttpMessageConverter);
-
-        // UTF-8 문자 인코딩을 사용하는 새로운 StringHttpMessageConverter 추가
-        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-        converters.add(stringConverter);
-    }
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        // 기존의 StringHttpMessageConverter를 제거
+//        converters.removeIf(converter -> converter instanceof StringHttpMessageConverter);
+//
+//        // UTF-8 문자 인코딩을 사용하는 새로운 StringHttpMessageConverter 추가
+//        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
+//        converters.add(stringConverter);
+//    }
 }
