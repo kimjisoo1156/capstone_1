@@ -87,4 +87,17 @@ public class AuthService {
         // 토큰 발급
         return tokenDto;
     }
+    // 비밀번호 재설정을 위한 메서드 추가
+    @Transactional
+    public void SetTempPassword(String email, String newPassword) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("해당 이메일을 찾을 수 없습니다."));
+
+        // 임시 비밀번호를 인코딩하여 저장
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        member.setPassword(encodedPassword);
+
+        // 회원 정보 저장
+        memberRepository.save(member);
+    }
 }
