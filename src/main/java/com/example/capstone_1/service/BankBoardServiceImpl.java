@@ -26,10 +26,11 @@ public class BankBoardServiceImpl implements BankBoardService{
     private final UserService userService;
 
     @Override
-    public Long register(BankBoardDTO boardDTO) {
+    public Long register(BankBoardDTO boardDTO) { //bankboard secret값 1로 defult
 
         String loggedInUserEmail = userService.getLoggedInUserEmail();
         boardDTO.setWriter(loggedInUserEmail);
+        boardDTO.setSecret(String.valueOf(1));
 
         BankBoard board = dtoToEntityBankBoard(boardDTO);
         Long bno = bankBoardRepository.save(board).getBno();

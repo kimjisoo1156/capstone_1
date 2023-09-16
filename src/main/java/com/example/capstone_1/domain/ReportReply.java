@@ -31,4 +31,7 @@ public class ReportReply extends BaseEntity{
 
         this.replyText = text;
     }
+    public void setReplyerToUnknown() {
+        this.replyer = "알수없음";
+    }
 }

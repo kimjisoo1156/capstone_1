@@ -48,6 +48,8 @@ public class BankBoard extends BaseEntity {
         this.accountHolder = accountHolder;
         this.content = content;
     }
-
+    public void setWriterToUnknown() {
+        this.writer = "알수없음";
+    }
 
 }

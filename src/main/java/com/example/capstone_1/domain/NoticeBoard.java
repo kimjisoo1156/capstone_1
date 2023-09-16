@@ -37,5 +37,7 @@ public class NoticeBoard extends BaseEntity{
         this.content = content;
     }
 
-
+    public void setWriterToUnknown() {
+        this.writer = "알수없음";
+    }
 }

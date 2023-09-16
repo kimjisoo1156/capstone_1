@@ -30,4 +30,7 @@ public class BankReply extends BaseEntity{
 
         this.replyText = text;
     }
+    public void setReplyerToUnknown() {
+        this.replyer = "알수없음";
+    }
 }

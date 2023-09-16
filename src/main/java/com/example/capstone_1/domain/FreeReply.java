@@ -31,7 +31,9 @@ public class FreeReply extends BaseEntity{  //자유게시판 댓글
 
         this.replyText = text;
     }
-
+    public void setReplyerToUnknown() {
+        this.replyer = "알수없음";
+    }
 }
 
 

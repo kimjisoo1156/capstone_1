@@ -36,4 +36,8 @@ public class FreeBoard extends BaseEntity{  //자유게시판
         this.content = content;
     }
 
+    // 작성자를 알 수 없음으로 변경하는 메서드
+    public void setWriterToUnknown() {
+        this.writer = "알수없음";
+    }
 }

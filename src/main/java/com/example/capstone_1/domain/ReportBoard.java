@@ -36,4 +36,7 @@ public class ReportBoard extends BaseEntity{
         this.title = title;
         this.content = content;
     }
+    public void setWriterToUnknown() {
+        this.writer = "알수없음";
+    }
 }

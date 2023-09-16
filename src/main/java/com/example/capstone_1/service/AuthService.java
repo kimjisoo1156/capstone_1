@@ -100,4 +100,7 @@ public class AuthService {
         // 회원 정보 저장
         memberRepository.save(member);
     }
+
+
+
 }
