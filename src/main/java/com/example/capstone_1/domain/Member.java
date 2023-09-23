@@ -29,6 +29,8 @@ public class Member {
 
     private String account;
 
+    private Boolean download;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
 

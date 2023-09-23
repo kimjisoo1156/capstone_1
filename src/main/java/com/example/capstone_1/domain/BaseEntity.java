@@ -20,6 +20,7 @@ abstract class BaseEntity {
     @Column(name = "regdate", updatable = false) //등록 날짜 시간
     private LocalDateTime regDate;
 
+
     @LastModifiedDate
     @Column(name ="moddate" ) //수정 날짜 시간
     private LocalDateTime modDate;

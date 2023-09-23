@@ -18,6 +18,7 @@ public class FreeBoard extends BaseEntity{  //자유게시판
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bno;
 
+
     @Column(length = 500, nullable = false) //컬럼의 길이와 null허용여부
     private String title;
 

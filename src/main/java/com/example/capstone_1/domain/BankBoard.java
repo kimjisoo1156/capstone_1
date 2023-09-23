@@ -39,7 +39,7 @@ public class BankBoard extends BaseEntity {
     @OneToMany(mappedBy = "bankBoard", cascade = CascadeType.ALL)
     private List<FileEntity> files;
 
-    private String secret;
+    private Long secret;
 
     public void changeBankBoard(String title, String bankName, String accountNumber,String accountHolder  ,String content){ //수정할 내용
         this.title = title;
