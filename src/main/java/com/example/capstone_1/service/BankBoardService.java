@@ -1,6 +1,7 @@
 package com.example.capstone_1.service;
 
 import com.example.capstone_1.domain.BankBoard;
+import com.example.capstone_1.domain.BoardType;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.dto.*;
 
@@ -18,7 +19,7 @@ public interface BankBoardService {
     void remove(Long bno);
 
     PageResponseDTO<BankBoardDTO> list(PageRequestDTO pageRequestDTO);
-
+    Board_File_DTO read(BoardType boardtype, Long bno);
     //댓글의 숫자까지 처리
     PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO);
 

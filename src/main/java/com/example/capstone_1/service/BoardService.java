@@ -1,6 +1,7 @@
 package com.example.capstone_1.service;
 
 
+import com.example.capstone_1.domain.BoardType;
 import com.example.capstone_1.dto.*;
 
 public interface BoardService {
@@ -8,7 +9,7 @@ public interface BoardService {
     Long register(BoardDTO boardDTO);
 
     BoardDTO readOne(Long bno);
-
+    Board_File_DTO read(BoardType boardtype, Long bno);
 //    void modify(BoardDTO boardDTO);
 
     void remove(Long bno);

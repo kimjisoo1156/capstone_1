@@ -1,9 +1,11 @@
 package com.example.capstone_1.service;
 
 import com.example.capstone_1.domain.BoardType;
+import com.example.capstone_1.domain.FileEntity;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.dto.*;
 import com.example.capstone_1.repository.FreeBoardRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -27,6 +29,7 @@ public class FreeBoardServiceImpl implements FreeBoardService{
     private final FreeBoardRepository freeBoardRepository;
 
     private final UserService userService;
+    private final FileService fileService;
 
     @Override
     public Long register(BoardDTO boardDTO) {
@@ -49,6 +52,24 @@ public class FreeBoardServiceImpl implements FreeBoardService{
 
         return boardDTO;
     }
+
+    @Override
+    public Board_File_DTO read(BoardType boardtype, Long bno) { //게시물이 지금 자유 이미지만 되는거지..
+        // 게시물 조회
+        Optional<FreeBoard> result = freeBoardRepository.findById(bno);
+        FreeBoard board = result.orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + bno));
+        Board_File_DTO boardWithImages = modelMapper.map(board, Board_File_DTO.class);
+
+        // 이미지 조회
+        List<FileEntity> imageEntities = fileService.getImagesForBoard(boardtype, bno);
+
+        // 이미지 데이터 추가
+        List<String> imageUrls = imageEntities.stream().map(FileEntity::getS3Url).collect(Collectors.toList());
+        boardWithImages.setFileNames(imageUrls);
+
+        return boardWithImages;
+    }
+
 
 
 //    @Override

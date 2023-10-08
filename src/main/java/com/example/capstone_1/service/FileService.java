@@ -1,5 +1,6 @@
 package com.example.capstone_1.service;
 
+import com.example.capstone_1.domain.BoardType;
 import com.example.capstone_1.domain.FileEntity;
 import com.example.capstone_1.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +27,9 @@ public class FileService {
 
     public void deleteFileById(Long id) {
         fileRepository.deleteById(id);
+    }
+    // 게시판 타입과 게시물 번호를 기반으로 이미지를 가져오는 메서드
+    public List<FileEntity> getImagesForBoard(BoardType boardType, Long bno) {
+        return fileRepository.findImagesForBoard(boardType, bno);
     }
 }

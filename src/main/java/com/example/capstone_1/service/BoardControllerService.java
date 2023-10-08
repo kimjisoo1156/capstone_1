@@ -11,7 +11,7 @@ public interface BoardControllerService {
     void modifyBoard(BoardType boardType, Long bno, BoardDTO boardDTO);
     PageResponseDTO<BoardListReplyCountDTO> searchBoards(String boardType, PageRequestDTO pageRequestDTO);
     PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(String boardType, PageRequestDTO pageRequestDTO);
-
+    Board_File_DTO getBoardWithImages(BoardType boardType, Long bno);
 
 
 }

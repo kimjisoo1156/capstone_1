@@ -186,5 +186,24 @@ public class BoardControllerServiceImpl implements BoardControllerService{
         }
     }
 
-
+    @Override
+    public Board_File_DTO getBoardWithImages(BoardType boardType, Long bno) {
+        Board_File_DTO boardWithImages;
+        switch (boardType) {
+            case FREE:
+                boardWithImages = freeBoardService.read(boardType, bno);
+                return boardWithImages;
+            case BANK:
+                boardWithImages = bankBoardService.read(boardType, bno);
+                return boardWithImages;
+            case REPORT:
+                boardWithImages = reportBoardService.read(boardType, bno);
+                return boardWithImages;
+            case NOTICE:
+                boardWithImages = noticeBoardService.read(boardType, bno);
+                return boardWithImages;
+            default:
+                throw new IllegalArgumentException("Invalid board type: " + boardType);
+        }
+    }
 }

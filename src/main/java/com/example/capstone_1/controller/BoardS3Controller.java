@@ -82,7 +82,7 @@ public class BoardS3Controller {
             @RequestParam(defaultValue = "1") int page,
             PageRequestDTO pageRequestDTO) {
 
-        int size = 11;
+        int size = 10;
 
         pageRequestDTO.setPage(page);
         pageRequestDTO.setSize(size);
@@ -101,6 +101,16 @@ public class BoardS3Controller {
         return ResponseEntity.ok(responseDTO);
     }
 
+
+    //게시판 내용 및 이미지 조회 api
+    @GetMapping("/{boardType}/{bno}/withImages")
+    public ResponseEntity<Board_File_DTO> getBoardWithImages(
+            @PathVariable String boardType,
+            @PathVariable Long bno) {
+        BoardType enumBoardType = BoardType.valueOf(boardType); //문자열 enum으로
+        Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
+        return ResponseEntity.ok(boardWithImages);
+    }
 
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")

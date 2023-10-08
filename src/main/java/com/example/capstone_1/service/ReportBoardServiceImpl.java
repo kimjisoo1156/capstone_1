@@ -1,10 +1,12 @@
 package com.example.capstone_1.service;
 
 import com.example.capstone_1.domain.BoardType;
+import com.example.capstone_1.domain.FileEntity;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.domain.ReportBoard;
 import com.example.capstone_1.dto.*;
 import com.example.capstone_1.repository.ReportBoardRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -25,7 +27,7 @@ public class ReportBoardServiceImpl implements ReportBoardService{
     private final ModelMapper modelMapper;
     private final ReportBoardRepository reportBoardRepository;
     private final UserService userService;
-
+    private final FileService fileService;
     @Override
     public Long register(BoardDTO boardDTO) {
         String loggedInUserEmail = userService.getLoggedInUserEmail();
@@ -48,6 +50,23 @@ public class ReportBoardServiceImpl implements ReportBoardService{
         BoardDTO boardDTO = entityToDTOReportBoard(board);
 
         return boardDTO;
+    }
+
+    @Override
+    public Board_File_DTO read(BoardType boardtype, Long bno) {
+        // 게시물 조회
+        Optional<ReportBoard> result = reportBoardRepository.findById(bno);
+        ReportBoard board = result.orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + bno));
+        Board_File_DTO boardWithImages = modelMapper.map(board, Board_File_DTO.class);
+
+        // 이미지 조회
+        List<FileEntity> imageEntities = fileService.getImagesForBoard(boardtype, bno);
+
+        // 이미지 데이터 추가
+        List<String> imageUrls = imageEntities.stream().map(FileEntity::getS3Url).collect(Collectors.toList());
+        boardWithImages.setFileNames(imageUrls);
+
+        return boardWithImages;
     }
 
 //    @Override
