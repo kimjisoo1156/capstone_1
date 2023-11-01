@@ -15,6 +15,8 @@ public class BoardListReplyCountDTO {
 
     private LocalDateTime regDate;
 
+    private String secret;
+
     private Long replyCount;
 
 }
