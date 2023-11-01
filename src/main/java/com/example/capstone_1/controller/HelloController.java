@@ -23,5 +23,8 @@ public class HelloController {
     public String hello3(){
         return "jisoo ghkdkdld";
     }
-
+    @GetMapping("/hello5")
+    public String hello5(){
+        return "jisoo!!!!!!";
+    }
 }

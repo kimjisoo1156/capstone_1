@@ -56,7 +56,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/auth/**","/hello","/hello2","/hello4","hello3","/boards/list","/boards/search","/boards/api/**","/send-mail/**").permitAll()
+                        .requestMatchers("/auth/**","/hello","/hello2","/hello4","hello5","hello3","/boards/list","/boards/search","/boards/api/**","/send-mail/**").permitAll()
                         .requestMatchers("/boards/**","/board/**","/css/**", "/js/**","/templates/board/**","/upload/**","/view/{fileName}","/remove/{fileName}","/boards/{boardType}/{bno}/withImages").permitAll()
                         .requestMatchers("/replies/{boardType}/list/{bno}").permitAll()
                         .requestMatchers("/boards/register","/replies/**","/api/member/**").hasAnyRole("USER","ADMIN") //댓글 권한 혹은 작성자 문제로 .. 화면에 안들어가는 예외가 발생함
