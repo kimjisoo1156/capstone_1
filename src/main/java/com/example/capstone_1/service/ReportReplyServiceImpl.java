@@ -1,9 +1,11 @@
 package com.example.capstone_1.service;
 
+import com.example.capstone_1.domain.FreeReply;
 import com.example.capstone_1.domain.ReportReply;
 import com.example.capstone_1.dto.PageRequestDTO;
 import com.example.capstone_1.dto.PageResponseDTO;
 import com.example.capstone_1.dto.ReplyDTO;
+import com.example.capstone_1.repository.ReplyRepository;
 import com.example.capstone_1.repository.ReportReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class ReportReplyServiceImpl implements ReplyService{
+public class ReportReplyServiceImpl implements ReplyService, ReplyRepository {
 
     private final ReportReplyRepository reportReplyRepository;
 
@@ -90,5 +92,15 @@ public class ReportReplyServiceImpl implements ReplyService{
     public void removeRepliesByBoardId(Long bno) {
     // 주어진 게시물 번호(bno)에 해당하는 모든 댓글들을 삭제합니다.
         reportReplyRepository.deleteByReportBoard_Bno(bno);
+    }
+
+    @Override
+    public String getWriterOfReply(Long rno) {
+        ReportReply reply = reportReplyRepository.findById(rno).orElse(null);
+        if (reply != null) {
+            return reply.getReplyer();
+        }else{
+            return null;
+        }
     }
 }

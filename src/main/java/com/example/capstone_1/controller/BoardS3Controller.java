@@ -128,25 +128,37 @@ public class BoardS3Controller {
         return ResponseEntity.ok(boardWithImages);
     }
 
-
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/modify/{boardType}/{bno}") // 수정 api
     public ResponseEntity<String> modifyBoard(@PathVariable String boardType,
                                               @PathVariable Long bno,
                                               @RequestBody @Valid BoardDTO boardDTO,
                                               BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors.toString());
+        BoardRepository boardRepository = null;
+        if ("FREE".equals(boardType)) {
+            boardRepository = freerepository;
+        } else if ("NOTICE".equals(boardType)) {
+            boardRepository = noticerepository;
+        } else if ("REPORT".equals(boardType)) {
+            boardRepository = reportrepository;
         }
+        String writer = boardRepository.getWriterOfBoard(bno);
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (currentUser.getUsername().equals(writer)||currentUser.getUsername().equals("darkest0722@gmail.com")){
+            if (bindingResult.hasErrors()) {
+                List<String> errors = bindingResult.getAllErrors().stream()
+                        .map(ObjectError::getDefaultMessage)
+                        .collect(Collectors.toList());
+                return ResponseEntity.badRequest().body(errors.toString());
+            }
 
-        BoardType enumBoardType = BoardType.valueOf(boardType);
-        boardControllerService.modifyBoard(enumBoardType, bno, boardDTO);
+            BoardType enumBoardType = BoardType.valueOf(boardType);
+            boardControllerService.modifyBoard(enumBoardType, bno, boardDTO);
 
-        return ResponseEntity.ok("Board modified successfully.");
+            return ResponseEntity.ok("Board modified successfully.");
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this board.");
+        }
     }
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/modify/bank/{boardType}/{bno}") // 수정 api -> http://localhost:8080/api/boards/modify/free/1

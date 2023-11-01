@@ -5,6 +5,7 @@ import com.example.capstone_1.dto.PageRequestDTO;
 import com.example.capstone_1.dto.PageResponseDTO;
 import com.example.capstone_1.dto.ReplyDTO;
 import com.example.capstone_1.repository.FreeReplyRepository;
+import com.example.capstone_1.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class FreeReplyServiceImpl implements ReplyService{
+public class FreeReplyServiceImpl implements ReplyService, ReplyRepository {
 
     private final FreeReplyRepository freeReplyRepository;
 
@@ -100,4 +101,13 @@ public class FreeReplyServiceImpl implements ReplyService{
     }
 
 
+    @Override
+    public String getWriterOfReply(Long rno) {
+        FreeReply reply = freeReplyRepository.findById(rno).orElse(null);
+        if (reply != null) {
+            return reply.getReplyer();
+        }else{
+            return null;
+        }
+    }
 }

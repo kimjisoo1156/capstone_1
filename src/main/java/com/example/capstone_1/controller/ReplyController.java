@@ -3,13 +3,17 @@ package com.example.capstone_1.controller;
 import com.example.capstone_1.dto.PageRequestDTO;
 import com.example.capstone_1.dto.PageResponseDTO;
 import com.example.capstone_1.dto.ReplyDTO;
+import com.example.capstone_1.repository.ReplyRepository;
 import com.example.capstone_1.service.CommentService;
 import com.example.capstone_1.service.ReplyService;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +27,20 @@ import java.util.Map;
 
 public class ReplyController {
 
+    private final ReplyRepository freereplyrepository;
+    private final ReplyRepository reportreplyrepository;
+    private final ReplyRepository noticereplyrepository;
+
     private final ReplyService freeReplyService;
 
     private final CommentService commentService;
-    public ReplyController(@Qualifier("freeReplyServiceImpl") ReplyService freeReplyService, CommentService commentService) {
+    public ReplyController(@Qualifier("freeReplyServiceImpl")ReplyRepository freereplyrepository,
+                           @Qualifier("reportReplyServiceImpl") ReplyRepository reportreplyrepository,
+                           @Qualifier("noticeReplyServiceImpl")ReplyRepository noticereplyrepository,
+                           @Qualifier("freeReplyServiceImpl") ReplyService freeReplyService, CommentService commentService) {
+        this.freereplyrepository = freereplyrepository;
+        this.reportreplyrepository = reportreplyrepository;
+        this.noticereplyrepository = noticereplyrepository;
         this.freeReplyService = freeReplyService;
         this.commentService = commentService;
     }
@@ -71,32 +85,64 @@ public class ReplyController {
     }
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{boardType}/{rno}")
-    public ResponseEntity<Map<String, Long>> removeComment(
+    public ResponseEntity<?> removeComment(
             @PathVariable String boardType,
             @PathVariable Long rno) {
 
-        commentService.remove(boardType, rno);
+        ReplyRepository replyRepository = null;
 
-        Map<String, Long> resultMap = new HashMap<>();
-        resultMap.put("rno", rno);
+        if ("FREE".equals(boardType)) {
+            replyRepository = freereplyrepository;
+        } else if ("NOTICE".equals(boardType)) {
+            replyRepository = noticereplyrepository;
+        } else if ("REPORT".equals(boardType)) {
+            replyRepository = reportreplyrepository;
+        }
+        String writer = replyRepository.getWriterOfReply(rno);
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (currentUser.getUsername().equals(writer)||currentUser.getUsername().equals("darkest0722@gmail.com")) {
+            commentService.remove(boardType, rno);
 
-        return ResponseEntity.ok(resultMap);
+            Map<String, Long> resultMap = new HashMap<>();
+            resultMap.put("rno", rno);
+
+            return ResponseEntity.ok(resultMap);
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this replies");
+        }
+
     }
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/{boardType}/{rno}")
-    public ResponseEntity<Map<String, Long>> modifyComment(
+    public ResponseEntity<?> modifyComment(
             @PathVariable String boardType,
             @PathVariable Long rno,
             @RequestBody ReplyDTO commentDTO) {
 
-        commentDTO.setRno(rno); // 번호를 일치시킴
+        ReplyRepository replyRepository = null;
 
-        commentService.modify(boardType, commentDTO);
+        if ("FREE".equals(boardType)) {
+            replyRepository = freereplyrepository;
+        } else if ("NOTICE".equals(boardType)) {
+            replyRepository = noticereplyrepository;
+        } else if ("REPORT".equals(boardType)) {
+            replyRepository = reportreplyrepository;
+        }
+        String writer = replyRepository.getWriterOfReply(rno);
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (currentUser.getUsername().equals(writer)||currentUser.getUsername().equals("darkest0722@gmail.com")) {
+            commentDTO.setRno(rno); // 번호를 일치시킴
 
-        Map<String, Long> resultMap = new HashMap<>();
-        resultMap.put("rno", rno);
+            commentService.modify(boardType, commentDTO);
 
-        return ResponseEntity.ok(resultMap);
+            Map<String, Long> resultMap = new HashMap<>();
+            resultMap.put("rno", rno);
+
+            return ResponseEntity.ok(resultMap);
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this replies");
+        }
+
     }
 
 

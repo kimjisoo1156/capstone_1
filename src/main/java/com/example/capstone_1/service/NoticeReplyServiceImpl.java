@@ -1,10 +1,12 @@
 package com.example.capstone_1.service;
 
+import com.example.capstone_1.domain.FreeReply;
 import com.example.capstone_1.domain.NoticeReply;
 import com.example.capstone_1.dto.PageRequestDTO;
 import com.example.capstone_1.dto.PageResponseDTO;
 import com.example.capstone_1.dto.ReplyDTO;
 import com.example.capstone_1.repository.NoticeReplyRepository;
+import com.example.capstone_1.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class NoticeReplyServiceImpl implements ReplyService{
+public class NoticeReplyServiceImpl implements ReplyService, ReplyRepository {
     private final NoticeReplyRepository noticeReplyRepository;
 
     private final ModelMapper modelMapper;
@@ -88,5 +90,15 @@ public class NoticeReplyServiceImpl implements ReplyService{
     public void removeRepliesByBoardId(Long bno) {
         noticeReplyRepository.deleteByNoticeBoard_Bno(bno);
 
+    }
+
+    @Override
+    public String getWriterOfReply(Long rno) {
+        NoticeReply reply = noticeReplyRepository.findById(rno).orElse(null);
+        if (reply != null) {
+            return reply.getReplyer();
+        }else{
+            return null;
+        }
     }
 }
