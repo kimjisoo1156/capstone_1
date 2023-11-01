@@ -117,11 +117,29 @@ public class ReportBoardServiceImpl implements ReportBoardService{
 
         Page<BoardListReplyCountDTO> result = reportBoardRepository.searchWithReplyCount(types, keyword, pageable);
 
+        // 가져온 DTO 목록에 secret 값을 설정
+        List<BoardListReplyCountDTO> dtos = result.getContent();
+        for (BoardListReplyCountDTO dto : dtos) {
+            // 데이터베이스에서 secret 값을 가져오는 메서드를 호출하여 설정
+            String secret = getSecretValue(dto.getBno());
+            dto.setSecret(secret);
+        }
         return PageResponseDTO.<BoardListReplyCountDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
                 .build();
+    }
+    private String getSecretValue(Long bno) {
+        // 예시로 Spring Data JPA를 사용하여 데이터베이스에서 secret 값을 가져오는 로직을 구현
+        Optional<ReportBoard> result = reportBoardRepository.findById(bno); // yourRepository는 해당 엔티티의 레포지토리입니다.
+
+        if (result.isPresent()) {
+            ReportBoard entity = result.get();
+            return entity.getSecret(); // 예시로 YourEntity 클래스의 getSecret() 메서드를 호출하여 secret 값을 가져옴
+        } else {
+            return ""; // 해당 bno에 해당하는 데이터가 없는 경우 빈 문자열을 반환하거나 적절한 방식으로 처리
+        }
     }
 
     @Override

@@ -20,7 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/replies")
 @Log4j2
-@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+
 public class ReplyController {
 
     private final ReplyService freeReplyService;
@@ -31,7 +31,7 @@ public class ReplyController {
         this.commentService = commentService;
     }
 
-
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 
     @PostMapping("/{boardType}/register")
     public ResponseEntity<Map<String, Long>> registerComment(
@@ -61,8 +61,6 @@ public class ReplyController {
 
         return ResponseEntity.ok(responseDTO);
     }
-
-
     @GetMapping("/{boardType}/{rno}")
     public ResponseEntity<ReplyDTO> getComment(
             @PathVariable String boardType,
@@ -71,6 +69,7 @@ public class ReplyController {
         ReplyDTO replyDTO = commentService.read(boardType, rno);
         return ResponseEntity.ok(replyDTO);
     }
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{boardType}/{rno}")
     public ResponseEntity<Map<String, Long>> removeComment(
             @PathVariable String boardType,
@@ -83,7 +82,7 @@ public class ReplyController {
 
         return ResponseEntity.ok(resultMap);
     }
-
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/{boardType}/{rno}")
     public ResponseEntity<Map<String, Long>> modifyComment(
             @PathVariable String boardType,

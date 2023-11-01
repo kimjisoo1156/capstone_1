@@ -4,6 +4,7 @@ import com.example.capstone_1.domain.BoardType;
 import com.example.capstone_1.domain.FileEntity;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.dto.*;
+import com.example.capstone_1.repository.BoardRepository;
 import com.example.capstone_1.repository.FreeBoardRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RequiredArgsConstructor
 @Transactional
-public class FreeBoardServiceImpl implements FreeBoardService{
+public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
 
     private final ModelMapper modelMapper;
     private final FreeBoardRepository freeBoardRepository;
@@ -159,4 +160,13 @@ public class FreeBoardServiceImpl implements FreeBoardService{
         freeBoardRepository.save(freeBoard);
     }
 
+    @Override
+    public String getWriterOfBoard(Long bno) {
+        FreeBoard board = freeBoardRepository.findById(bno).orElse(null);
+        if (board != null) {
+            return board.getWriter();
+        }else{
+            return null;
+        }
+    }
 }

@@ -2,18 +2,18 @@ package com.example.capstone_1.controller;
 
 import com.example.capstone_1.domain.*;
 import com.example.capstone_1.dto.*;
-import com.example.capstone_1.repository.BankBoardRepository;
-import com.example.capstone_1.repository.FreeBoardRepository;
-import com.example.capstone_1.repository.NoticeBoardRepository;
-import com.example.capstone_1.repository.ReportBoardRepository;
+import com.example.capstone_1.repository.*;
 import com.example.capstone_1.service.*;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 @Log4j2
 @RequestMapping("/boards")
 public class BoardS3Controller {
+
+
     private final FreeBoardService freeBoardService;
     private final FreeBoardRepository freeBoardRepository;
     private final ReplyService freeReplyService;
@@ -49,12 +51,18 @@ public class BoardS3Controller {
 
     private final BoardControllerService boardControllerService;
 
+    private final UserService userService;
+    @Autowired
+    @Qualifier("freeBoardServiceImpl")
+    private BoardRepository freerepository;
+
+
     public BoardS3Controller(FreeBoardService freeBoardService,
                              FreeBoardRepository freeBoardRepository, @Qualifier("freeReplyServiceImpl") ReplyService freeReplyService,
                              NoticeBoardService noticeBoardService, NoticeBoardRepository noticeBoardRepository,
                              @Qualifier("noticeReplyServiceImpl") ReplyService noticeReplyService, BankBoardService bankBoardService, BankBoardRepository bankBoardRepository,
                              @Qualifier("bankReplyServiceImpl") ReplyService bankReplyService, ReportBoardService reportBoardService, ReportBoardRepository reportBoardRepository,
-                             @Qualifier("reportReplyServiceImpl") ReplyService reportReplyService, S3Service s3Service, FileService fileService, BoardControllerService boardControllerService) {
+                             @Qualifier("reportReplyServiceImpl") ReplyService reportReplyService, S3Service s3Service, FileService fileService, BoardControllerService boardControllerService, UserService userService) {
 
         this.freeBoardService = freeBoardService;
         this.freeBoardRepository = freeBoardRepository;
@@ -71,6 +79,7 @@ public class BoardS3Controller {
         this.s3Service = s3Service;
         this.fileService = fileService;
         this.boardControllerService = boardControllerService;
+        this.userService = userService;
     }
 
 
@@ -119,6 +128,7 @@ public class BoardS3Controller {
                                               @PathVariable Long bno,
                                               @RequestBody @Valid BoardDTO boardDTO,
                                               BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
@@ -169,9 +179,23 @@ public class BoardS3Controller {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/remove/{boardType}/{bno}")
     public ResponseEntity<String> removeBoard(@PathVariable String boardType, @PathVariable Long bno) {
-        BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열을 enum으로 변환
-        boardControllerService.removeBoard(enumBoardType, bno); // 공통 로직 호출
-        return ResponseEntity.ok(enumBoardType + " board removed successfully.");
+
+        BoardRepository boardRepository = null;
+        if ("FREE".equals(boardType)) {
+            boardRepository = freerepository;
+        }
+        String writer = boardRepository.getWriterOfBoard(bno);
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (currentUser.getUsername().equals(writer)||currentUser.getUsername().equals("darkest0722@gmail.com")) {
+
+            BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열을 enum으로 변환
+            boardControllerService.removeBoard(enumBoardType, bno); // 공통 로직 호출
+            return ResponseEntity.ok(enumBoardType + " board removed successfully.");
+
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this board.");
+        }
+
     }
 
     @PostMapping(value = "/api/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
