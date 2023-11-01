@@ -30,11 +30,11 @@ public class BoardControllerServiceImpl implements BoardControllerService{
     @Autowired
     private ReportBoardService reportBoardService;
 
-    @Qualifier("bankReplyServiceImpl")
-    @Autowired
-    private ReplyService bankReplyService;
-    @Autowired
-    private BankBoardService bankBoardService;
+//    @Qualifier("bankReplyServiceImpl")
+//    @Autowired
+//    private ReplyService bankReplyService;
+//    @Autowired
+//    private BankBoardService bankBoardService;
 
     @Autowired
     private S3Service s3Service;
@@ -86,20 +86,7 @@ public class BoardControllerServiceImpl implements BoardControllerService{
                 reportReplyService.removeRepliesByBoardId(bno);
                 reportBoardService.remove(bno);
                 break;
-            case BANK:
-                BankBoard bankBoard = bankBoardService.findById(bno);
-                if (bankBoard != null) {
-                    List<FileEntity> imageFiles = bankBoard.getFiles();
-                    if (imageFiles != null) {
-                        for (FileEntity fileEntity : imageFiles) {
-                            s3Service.deleteFile(fileEntity.getFileName());
-                            fileService.deleteFileById(fileEntity.getId());
-                        }
-                    }
-                    bankReplyService.removeRepliesByBoardId(bno);
-                    bankBoardService.remove(bno);
-                }
-                break;
+
             default:
                 throw new IllegalArgumentException("Invalid board type: " + boardType);
         }
@@ -120,14 +107,14 @@ public class BoardControllerServiceImpl implements BoardControllerService{
         }
     }
 
-    @Override
-    public Long registerBankBoard(BoardType boardType, BankBoardDTO bankBoardDTO) {
-        if (boardType == BoardType.BANK) {
-            return bankBoardService.register(bankBoardDTO);
-        } else {
-            throw new IllegalArgumentException("Invalid board type for BankBoard: " + boardType);
-        }
-    }
+//    @Override
+//    public Long registerBankBoard(BoardType boardType, BankBoardDTO bankBoardDTO) {
+//        if (boardType == BoardType.BANK) {
+//            return bankBoardService.register(bankBoardDTO);
+//        } else {
+//            throw new IllegalArgumentException("Invalid board type for BankBoard: " + boardType);
+//        }
+//    }
 
     @Override
     public void modifyBoard(BoardType boardType, Long bno, BoardDTO boardDTO) {
@@ -160,8 +147,6 @@ public class BoardControllerServiceImpl implements BoardControllerService{
     public PageResponseDTO<BoardListReplyCountDTO> searchBoards(String boardType, PageRequestDTO pageRequestDTO) {
         if ("FREE".equals(boardType)) {
             return freeBoardService.listWithReplyCount(pageRequestDTO);
-        } else if ("BANK".equals(boardType)) {
-            return bankBoardService.listWithReplyCount(pageRequestDTO);
         } else if ("NOTICE".equals(boardType)) {
             return noticeBoardService.listWithReplyCount(pageRequestDTO);
         }  else if ("REPORT".equals(boardType)) {
@@ -175,8 +160,6 @@ public class BoardControllerServiceImpl implements BoardControllerService{
     public PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(String boardType, PageRequestDTO pageRequestDTO) {
         if ("FREE".equals(boardType)) {
             return freeBoardService.listWithReplyCount(pageRequestDTO);
-        } else if ("BANK".equals(boardType)) {
-            return bankBoardService.listWithReplyCount(pageRequestDTO);
         } else if ("NOTICE".equals(boardType)) {
             return noticeBoardService.listWithReplyCount(pageRequestDTO);
         }else if ("REPORT".equals(boardType)) {
@@ -192,9 +175,6 @@ public class BoardControllerServiceImpl implements BoardControllerService{
         switch (boardType) {
             case FREE:
                 boardWithImages = freeBoardService.read(boardType, bno);
-                return boardWithImages;
-            case BANK:
-                boardWithImages = bankBoardService.read(boardType, bno);
                 return boardWithImages;
             case REPORT:
                 boardWithImages = reportBoardService.read(boardType, bno);

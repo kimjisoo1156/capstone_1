@@ -46,7 +46,6 @@ public class ReplyController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-
     @PostMapping("/{boardType}/register")
     public ResponseEntity<Map<String, Long>> registerComment(
             @PathVariable String boardType,

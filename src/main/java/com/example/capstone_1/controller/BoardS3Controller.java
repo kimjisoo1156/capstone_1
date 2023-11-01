@@ -37,9 +37,9 @@ public class BoardS3Controller {
     private final NoticeBoardRepository noticeBoardRepository;
     private final ReplyService noticeReplyService;
 
-    private final BankBoardService bankBoardService;
-    private final BankBoardRepository bankBoardRepository;
-    private final ReplyService bankReplyService;
+//    private final BankBoardService bankBoardService;
+//    private final BankBoardRepository bankBoardRepository;
+//    private final ReplyService bankReplyService;
 
     private final ReportBoardService reportBoardService;
     private final ReportBoardRepository reportBoardRepository;
@@ -67,8 +67,8 @@ public class BoardS3Controller {
     public BoardS3Controller(FreeBoardService freeBoardService,
                              FreeBoardRepository freeBoardRepository, @Qualifier("freeReplyServiceImpl") ReplyService freeReplyService,
                              NoticeBoardService noticeBoardService, NoticeBoardRepository noticeBoardRepository,
-                             @Qualifier("noticeReplyServiceImpl") ReplyService noticeReplyService, BankBoardService bankBoardService, BankBoardRepository bankBoardRepository,
-                             @Qualifier("bankReplyServiceImpl") ReplyService bankReplyService, ReportBoardService reportBoardService, ReportBoardRepository reportBoardRepository,
+                             @Qualifier("noticeReplyServiceImpl") ReplyService noticeReplyService,
+                             ReportBoardService reportBoardService, ReportBoardRepository reportBoardRepository,
                              @Qualifier("reportReplyServiceImpl") ReplyService reportReplyService, S3Service s3Service, FileService fileService, BoardControllerService boardControllerService, UserService userService) {
 
         this.freeBoardService = freeBoardService;
@@ -77,9 +77,6 @@ public class BoardS3Controller {
         this.noticeBoardService = noticeBoardService;
         this.noticeBoardRepository = noticeBoardRepository;
         this.noticeReplyService = noticeReplyService;
-        this.bankBoardService = bankBoardService;
-        this.bankBoardRepository = bankBoardRepository;
-        this.bankReplyService = bankReplyService;
         this.reportBoardService = reportBoardService;
         this.reportBoardRepository = reportBoardRepository;
         this.reportReplyService = reportReplyService;
@@ -160,24 +157,24 @@ public class BoardS3Controller {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this board.");
         }
     }
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PutMapping("/modify/bank/{boardType}/{bno}") // 수정 api -> http://localhost:8080/api/boards/modify/free/1
-    public ResponseEntity<String> modifyBoard(@PathVariable String boardType,
-                                              @PathVariable Long bno,
-                                              @RequestBody @Valid BankBoardDTO boardDTO,
-                                              BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors.toString());
-        }
-
-        boardDTO.setBno(bno);
-        bankBoardService.modify(boardDTO);
-
-        return ResponseEntity.ok("Board modified successfully.");
-    }
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+//    @PutMapping("/modify/bank/{boardType}/{bno}") // 수정 api -> http://localhost:8080/api/boards/modify/free/1
+//    public ResponseEntity<String> modifyBoard(@PathVariable String boardType,
+//                                              @PathVariable Long bno,
+//                                              @RequestBody @Valid BankBoardDTO boardDTO,
+//                                              BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) {
+//            List<String> errors = bindingResult.getAllErrors().stream()
+//                    .map(ObjectError::getDefaultMessage)
+//                    .collect(Collectors.toList());
+//            return ResponseEntity.badRequest().body(errors.toString());
+//        }
+//
+//        boardDTO.setBno(bno);
+//        bankBoardService.modify(boardDTO);
+//
+//        return ResponseEntity.ok("Board modified successfully.");
+//    }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/register")
@@ -187,13 +184,13 @@ public class BoardS3Controller {
         return ResponseEntity.ok(bno);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PostMapping("/register/bank")
-    public ResponseEntity<Long> registerBankBoard(@RequestBody BankBoardDTO bankBoardDTO) {
-        BoardType boardType = bankBoardDTO.getBoardType();
-        Long bno = boardControllerService.registerBankBoard(boardType, bankBoardDTO);
-        return ResponseEntity.ok(bno);
-    }
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+//    @PostMapping("/register/bank")
+//    public ResponseEntity<Long> registerBankBoard(@RequestBody BankBoardDTO bankBoardDTO) {
+//        BoardType boardType = bankBoardDTO.getBoardType();
+//        Long bno = boardControllerService.registerBankBoard(boardType, bankBoardDTO);
+//        return ResponseEntity.ok(bno);
+//    }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/remove/{boardType}/{bno}")
@@ -244,7 +241,6 @@ public class BoardS3Controller {
                             boardType,
                             freeBoard,
                             null,
-                            null,
                             null
                     );
                     break;
@@ -255,7 +251,6 @@ public class BoardS3Controller {
                             fileResponseDto.getUuid(),
                             fileResponseDto.getUrl(),
                             boardType,
-                            null,
                             null,
                             noticeBoard,
                             null
@@ -270,23 +265,10 @@ public class BoardS3Controller {
                             boardType,
                             null,
                             null,
-                            null,
                             reportBoard
                     );
                     break;
-                case BANK:
-                    BankBoard bankBoard = bankBoardService.findById(bno);
-                    fileEntity = new FileEntity(
-                            fileResponseDto.getFileName(),
-                            fileResponseDto.getUuid(),
-                            fileResponseDto.getUrl(),
-                            boardType,
-                            null,
-                            bankBoard,
-                            null,
-                            null
-                    );
-                    break;
+
             }
 
             fileService.save(fileEntity);

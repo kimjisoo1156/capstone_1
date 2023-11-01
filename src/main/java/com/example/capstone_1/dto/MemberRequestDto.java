@@ -16,8 +16,6 @@ public class MemberRequestDto { //회원가입할때 필요한 필드들,
     private String password;
     private String phoneNumber;
     private String name;
-    private String bankName;
-    private String account;
 
 
     public Member toMember(PasswordEncoder passwordEncoder) {
@@ -26,8 +24,6 @@ public class MemberRequestDto { //회원가입할때 필요한 필드들,
                 .password(passwordEncoder.encode(password))
                 .phoneNumber(phoneNumber)
                 .name(name)
-                .bankName(bankName)
-                .account(account)
                 .authority(Authority.ROLE_USER)
                 .build();
     }

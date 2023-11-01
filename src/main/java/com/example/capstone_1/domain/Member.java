@@ -25,9 +25,9 @@ public class Member {
 
     private String name;
 
-    private String bankName;
-
-    private String account;
+//    private String bankName;
+//
+//    private String account;
 
     private Boolean download;
 
@@ -36,13 +36,13 @@ public class Member {
 
     @Builder
     public Member(String email, String password, Authority authority,
-                  String phoneNumber, String name, String bankName, String account) {
+                  String phoneNumber, String name) {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.name = name;
-        this.bankName = bankName;
-        this.account = account;
+//        this.bankName = bankName;
+//        this.account = account;
         this.authority = authority;
     }
 

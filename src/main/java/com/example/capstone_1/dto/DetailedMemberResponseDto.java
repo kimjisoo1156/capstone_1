@@ -12,16 +12,12 @@ public class DetailedMemberResponseDto {
     private String email;
     private String phoneNumber;
     private String name;
-    private String bankName;
-    private String account;
 
     public static DetailedMemberResponseDto of(Member member) {
         return new DetailedMemberResponseDto(
                 member.getEmail(),
                 member.getPhoneNumber(),
-                member.getName(),
-                member.getBankName(),
-                member.getAccount()
+                member.getName()
         );
     }
 }
