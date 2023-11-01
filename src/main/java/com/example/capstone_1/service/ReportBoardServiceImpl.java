@@ -5,6 +5,7 @@ import com.example.capstone_1.domain.FileEntity;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.domain.ReportBoard;
 import com.example.capstone_1.dto.*;
+import com.example.capstone_1.repository.BoardRepository;
 import com.example.capstone_1.repository.ReportBoardRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RequiredArgsConstructor
 @Transactional
-public class ReportBoardServiceImpl implements ReportBoardService{
+public class ReportBoardServiceImpl implements ReportBoardService, BoardRepository {
 
     private final ModelMapper modelMapper;
     private final ReportBoardRepository reportBoardRepository;
@@ -154,4 +155,13 @@ public class ReportBoardServiceImpl implements ReportBoardService{
     }
 
 
+    @Override
+    public String getWriterOfBoard(Long bno) {
+        ReportBoard board = reportBoardRepository.findById(bno).orElse(null);
+        if (board != null) {
+            return board.getWriter();
+        }else{
+            return null;
+        }
+    }
 }

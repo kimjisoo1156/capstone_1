@@ -5,6 +5,7 @@ import com.example.capstone_1.domain.FileEntity;
 import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.domain.NoticeBoard;
 import com.example.capstone_1.dto.*;
+import com.example.capstone_1.repository.BoardRepository;
 import com.example.capstone_1.repository.NoticeBoardRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RequiredArgsConstructor
 @Transactional
-public class NoticeBoardServiceImpl implements NoticeBoardService{
+public class NoticeBoardServiceImpl implements NoticeBoardService, BoardRepository {
 
 
     private final ModelMapper modelMapper;
@@ -153,4 +154,13 @@ public class NoticeBoardServiceImpl implements NoticeBoardService{
         return noticeBoardRepository.findById(bno).orElse(null);
     }
 
+    @Override
+    public String getWriterOfBoard(Long bno) {
+        NoticeBoard board = noticeBoardRepository.findById(bno).orElse(null);
+        if (board != null) {
+            return board.getWriter();
+        }else{
+            return null;
+        }
+    }
 }

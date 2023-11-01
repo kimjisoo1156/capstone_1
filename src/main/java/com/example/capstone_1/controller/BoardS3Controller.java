@@ -56,6 +56,13 @@ public class BoardS3Controller {
     @Qualifier("freeBoardServiceImpl")
     private BoardRepository freerepository;
 
+    @Autowired
+    @Qualifier("noticeBoardServiceImpl")
+    private BoardRepository noticerepository;
+
+    @Autowired
+    @Qualifier("reportBoardServiceImpl")
+    private BoardRepository reportrepository;
 
     public BoardS3Controller(FreeBoardService freeBoardService,
                              FreeBoardRepository freeBoardRepository, @Qualifier("freeReplyServiceImpl") ReplyService freeReplyService,
@@ -183,6 +190,10 @@ public class BoardS3Controller {
         BoardRepository boardRepository = null;
         if ("FREE".equals(boardType)) {
             boardRepository = freerepository;
+        } else if ("NOTICE".equals(boardType)) {
+            boardRepository = noticerepository;
+        } else if ("REPORT".equals(boardType)) {
+            boardRepository = reportrepository;
         }
         String writer = boardRepository.getWriterOfBoard(bno);
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
