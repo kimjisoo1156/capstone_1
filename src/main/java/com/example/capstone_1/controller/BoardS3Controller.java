@@ -135,7 +135,7 @@ public class BoardS3Controller {
         String secret = boardRepository.getSecretOfBoard(bno);
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (currentUser.getUsername().equals(writer) & secret.equals("0")||currentUser.getUsername().equals("darkest0722@gmail.com")){
+        if (currentUser.getUsername().equals(writer) || secret.equals("0")||currentUser.getUsername().equals("darkest0722@gmail.com")){
             BoardType enumBoardType = BoardType.valueOf(boardType); //문자열 enum으로
             Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
             return ResponseEntity.ok(boardWithImages);
