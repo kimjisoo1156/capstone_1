@@ -164,4 +164,14 @@ public class ReportBoardServiceImpl implements ReportBoardService, BoardReposito
             return null;
         }
     }
+
+    @Override
+    public String getSecretOfBoard(Long bno) {
+        ReportBoard board = reportBoardRepository.findById(bno).orElse(null);
+        if (board != null) {
+            return board.getSecret();
+        }else{
+            return null;
+        }
+    }
 }

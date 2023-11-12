@@ -169,4 +169,14 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
             return null;
         }
     }
+
+    @Override
+    public String getSecretOfBoard(Long bno) {
+        FreeBoard board = freeBoardRepository.findById(bno).orElse(null);
+        if (board != null) {
+            return board.getSecret();
+        }else{
+            return null;
+        }
+    }
 }

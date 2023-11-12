@@ -163,4 +163,14 @@ public class NoticeBoardServiceImpl implements NoticeBoardService, BoardReposito
             return null;
         }
     }
+
+    @Override
+    public String getSecretOfBoard(Long bno) {
+        NoticeBoard board = noticeBoardRepository.findById(bno).orElse(null);
+        if (board != null) {
+            return board.getSecret();
+        }else{
+            return null;
+        }
+    }
 }

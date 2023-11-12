@@ -117,12 +117,33 @@ public class BoardS3Controller {
 
     //게시판 내용 및 이미지 조회 api
     @GetMapping("/{boardType}/{bno}/withImages")
-    public ResponseEntity<Board_File_DTO> getBoardWithImages(
+    public ResponseEntity<?> getBoardWithImages(
             @PathVariable String boardType,
             @PathVariable Long bno) {
-        BoardType enumBoardType = BoardType.valueOf(boardType); //문자열 enum으로
-        Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
-        return ResponseEntity.ok(boardWithImages);
+
+        BoardRepository boardRepository = null;
+        if ("FREE".equals(boardType)) {
+            boardRepository = freerepository;
+        } else if ("NOTICE".equals(boardType)) {
+            boardRepository = noticerepository;
+        } else if ("REPORT".equals(boardType)) {
+            boardRepository = reportrepository;
+        }
+
+
+        String writer = boardRepository.getWriterOfBoard(bno);
+        String secret = boardRepository.getSecretOfBoard(bno);
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (currentUser.getUsername().equals(writer) & secret.equals("0")||currentUser.getUsername().equals("darkest0722@gmail.com")){
+            BoardType enumBoardType = BoardType.valueOf(boardType); //문자열 enum으로
+            Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
+            return ResponseEntity.ok(boardWithImages);
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to read this board.");
+        }
+
+
     }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
