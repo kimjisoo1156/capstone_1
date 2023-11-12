@@ -139,8 +139,8 @@ public class BoardS3Controller {
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             currentUser = (User) authentication.getPrincipal();
         }
-        if (currentUser.equals(null)){  //로그인 안한 경우
-            if ("0".equals(secret) ||  currentUser.getUsername().equals("darkest0722@gmail.com")){
+        if (currentUser==null){  //로그인 안한 경우
+            if ("0".equals(secret)){
                 BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열 enum으로
                 Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
                 return ResponseEntity.ok(boardWithImages);
