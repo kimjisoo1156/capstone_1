@@ -135,7 +135,7 @@ public class BoardS3Controller {
         String secret = boardRepository.getSecretOfBoard(bno);
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if("1".equals(secret) && !currentUser.getUsername().equals(writer) || !currentUser.getUsername().equals("darkest0722@gmail.com")){
+        if("1".equals(secret) && !currentUser.getUsername().equals(writer) && !currentUser.getUsername().equals("darkest0722@gmail.com")){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to read this board.");
         }else{
             BoardType enumBoardType = BoardType.valueOf(boardType); //문자열 enum으로
