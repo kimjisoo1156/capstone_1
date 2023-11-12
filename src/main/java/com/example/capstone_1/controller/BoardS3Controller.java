@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
@@ -129,18 +130,34 @@ public class BoardS3Controller {
         } else if ("REPORT".equals(boardType)) {
             boardRepository = reportrepository;
         }
-
-
         String writer = boardRepository.getWriterOfBoard(bno);
         String secret = boardRepository.getSecretOfBoard(bno);
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if("1".equals(secret) && !currentUser.getUsername().equals(writer) && !currentUser.getUsername().equals("darkest0722@gmail.com")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to read this board.");
+        // 현재 사용자가 로그인한 경우에만 가져오도록
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = null;
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            currentUser = (User) authentication.getPrincipal();
+        }
+        if (currentUser.equals(null)){  //로그인 안한 경우
+            if ("0".equals(secret) ||  currentUser.getUsername().equals("darkest0722@gmail.com")){
+                BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열 enum으로
+                Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
+                return ResponseEntity.ok(boardWithImages);
+            }else{
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to read this board.");
+            }
+
         }else{
-            BoardType enumBoardType = BoardType.valueOf(boardType); //문자열 enum으로
-            Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
-            return ResponseEntity.ok(boardWithImages);
+
+            if("1".equals(secret) && currentUser.getUsername().equals(writer) ||  currentUser.getUsername().equals("darkest0722@gmail.com")){
+                BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열 enum으로
+                Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
+                return ResponseEntity.ok(boardWithImages);
+            }else{
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to read this board.");
+            }
+
         }
 
     }
