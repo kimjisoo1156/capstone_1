@@ -34,7 +34,7 @@ public class QNoticeBoard extends EntityPathBase<NoticeBoard> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> regDate = _super.regDate;
 
-    public final StringPath secret = createString("secret");
+    public final NumberPath<Long> secret = createNumber("secret", Long.class);
 
     public final StringPath title = createString("title");
 

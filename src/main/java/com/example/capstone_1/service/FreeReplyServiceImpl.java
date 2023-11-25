@@ -30,11 +30,11 @@ public class FreeReplyServiceImpl implements ReplyService, ReplyRepository {
 
     private final ModelMapper modelMapper;
 
-    private final UserService userService;
+    private final MemberService memberService;
 
     @Override
     public Long register(ReplyDTO replyDTO) {
-        String loggedInUserEmail = userService.getLoggedInUserEmail();
+        String loggedInUserEmail = memberService.getLoggedInUserEmail();
         replyDTO.setReplyer(loggedInUserEmail);
         FreeReply reply = modelMapper.map(replyDTO, FreeReply.class);
 

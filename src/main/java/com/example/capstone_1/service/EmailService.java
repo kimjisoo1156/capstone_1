@@ -46,7 +46,6 @@ public class EmailService {
         }
     }
 
-    // 인증번호 및 임시 비밀번호 생성 메서드
     public String createCode() {
         Random random = new Random();
         StringBuffer key = new StringBuffer();
@@ -57,7 +56,9 @@ public class EmailService {
             switch (index) {
                 case 0: key.append((char) ((int) random.nextInt(26) + 97)); break;
                 case 1: key.append((char) ((int) random.nextInt(26) + 65)); break;
-                default: key.append(random.nextInt(9));
+                case 2: key.append((char) ((int) random.nextInt(10) + 48)); break; // 숫자 추가
+                case 3: key.append((char) ((int) random.nextInt(15) + 33)); break; // 특수문자 추가
+                default: key.append(random.nextInt(10));
             }
         }
         return key.toString();

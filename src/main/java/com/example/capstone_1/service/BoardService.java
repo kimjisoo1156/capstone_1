@@ -19,6 +19,4 @@ public interface BoardService {
     //댓글의 숫자까지 처리
     PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO);
 
-
-
 }

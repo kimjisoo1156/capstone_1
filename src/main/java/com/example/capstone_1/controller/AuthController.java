@@ -24,9 +24,17 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto memberRequestDto){
-
-        return ResponseEntity.ok(authService.signup(memberRequestDto));
+        try {
+            authService.validateSignUpRequest(memberRequestDto);
+            return ResponseEntity.ok(authService.signup(memberRequestDto));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(MemberResponseDto.error(e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(MemberResponseDto.error(e.getMessage()));
+        }
     }
+
+
 
     @GetMapping(value ="/check-email",produces="application/json; charset=utf8")
     public ResponseEntity<String> checkEmailDuplication(@RequestParam String email) {

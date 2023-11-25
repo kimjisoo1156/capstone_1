@@ -30,11 +30,6 @@ public class BoardControllerServiceImpl implements BoardControllerService{
     @Autowired
     private ReportBoardService reportBoardService;
 
-//    @Qualifier("bankReplyServiceImpl")
-//    @Autowired
-//    private ReplyService bankReplyService;
-//    @Autowired
-//    private BankBoardService bankBoardService;
 
     @Autowired
     private S3Service s3Service;
@@ -107,14 +102,6 @@ public class BoardControllerServiceImpl implements BoardControllerService{
         }
     }
 
-//    @Override
-//    public Long registerBankBoard(BoardType boardType, BankBoardDTO bankBoardDTO) {
-//        if (boardType == BoardType.BANK) {
-//            return bankBoardService.register(bankBoardDTO);
-//        } else {
-//            throw new IllegalArgumentException("Invalid board type for BankBoard: " + boardType);
-//        }
-//    }
 
     @Override
     public void modifyBoard(BoardType boardType, Long bno, BoardDTO boardDTO) {

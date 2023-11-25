@@ -4,6 +4,9 @@ import com.example.capstone_1.domain.*;
 import com.example.capstone_1.dto.*;
 import com.example.capstone_1.repository.*;
 import com.example.capstone_1.service.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
@@ -38,10 +42,6 @@ public class BoardS3Controller {
     private final NoticeBoardRepository noticeBoardRepository;
     private final ReplyService noticeReplyService;
 
-//    private final BankBoardService bankBoardService;
-//    private final BankBoardRepository bankBoardRepository;
-//    private final ReplyService bankReplyService;
-
     private final ReportBoardService reportBoardService;
     private final ReportBoardRepository reportBoardRepository;
     private final ReplyService reportReplyService;
@@ -52,7 +52,7 @@ public class BoardS3Controller {
 
     private final BoardControllerService boardControllerService;
 
-    private final UserService userService;
+    private final MemberService memberService;
     @Autowired
     @Qualifier("freeBoardServiceImpl")
     private BoardRepository freerepository;
@@ -70,7 +70,7 @@ public class BoardS3Controller {
                              NoticeBoardService noticeBoardService, NoticeBoardRepository noticeBoardRepository,
                              @Qualifier("noticeReplyServiceImpl") ReplyService noticeReplyService,
                              ReportBoardService reportBoardService, ReportBoardRepository reportBoardRepository,
-                             @Qualifier("reportReplyServiceImpl") ReplyService reportReplyService, S3Service s3Service, FileService fileService, BoardControllerService boardControllerService, UserService userService) {
+                             @Qualifier("reportReplyServiceImpl") ReplyService reportReplyService, S3Service s3Service, FileService fileService, BoardControllerService boardControllerService, MemberService memberService) {
 
         this.freeBoardService = freeBoardService;
         this.freeBoardRepository = freeBoardRepository;
@@ -84,7 +84,7 @@ public class BoardS3Controller {
         this.s3Service = s3Service;
         this.fileService = fileService;
         this.boardControllerService = boardControllerService;
-        this.userService = userService;
+        this.memberService = memberService;
     }
 
 
@@ -116,7 +116,7 @@ public class BoardS3Controller {
     }
 
 
-    //게시판 내용 및 이미지 조회 api
+//    게시판 내용 및 이미지 조회 api
     @GetMapping("/{boardType}/{bno}/withImages")
     public ResponseEntity<?> getBoardWithImages(
             @PathVariable String boardType,
@@ -131,7 +131,7 @@ public class BoardS3Controller {
             boardRepository = reportrepository;
         }
         String writer = boardRepository.getWriterOfBoard(bno);
-        String secret = boardRepository.getSecretOfBoard(bno);
+        Long secret = boardRepository.getSecretOfBoard(bno);
 
         // 현재 사용자가 로그인한 경우에만 가져오도록
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -140,7 +140,7 @@ public class BoardS3Controller {
             currentUser = (User) authentication.getPrincipal();
         }
         if (currentUser==null){  //로그인 안한 경우
-            if ("0".equals(secret)){
+            if (0L == secret){
                 BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열 enum으로
                 Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
                 return ResponseEntity.ok(boardWithImages);
@@ -150,7 +150,7 @@ public class BoardS3Controller {
 
         }else{
 
-            if("1".equals(secret) && currentUser.getUsername().equals(writer) ||  currentUser.getUsername().equals("darkest0722@gmail.com")){
+            if(1L == secret && currentUser.getUsername().equals(writer) ||  currentUser.getUsername().equals("darkest0722@gmail.com")){
                 BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열 enum으로
                 Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
                 return ResponseEntity.ok(boardWithImages);
@@ -161,6 +161,85 @@ public class BoardS3Controller {
         }
 
     }
+
+
+
+//    @GetMapping("/{boardType}/{bno}/withImages")
+//    public ResponseEntity<?> getBoardWithImages(
+//            @PathVariable String boardType,
+//            @PathVariable Long bno,
+//            HttpServletRequest request,
+//            HttpServletResponse response) {
+//        // 클라이언트에서 쿠키를 읽어옴
+//        Cookie[] cookies = request.getCookies();
+//        boolean isAlreadyRead = false;
+//
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if (cookie.getName().equals("read_board_" + bno)) {
+//                    // 쿠키에 해당 게시물을 이미 읽었다는 정보가 있으면 중복 읽기로 판단
+//                    isAlreadyRead = true;
+//                    break;
+//                }
+//            }
+//        }
+//
+//        if (!isAlreadyRead) {
+//            // 조회수 업데이트
+//            freeBoardService.updateViewCount(bno);
+//
+//            // 클라이언트에게 읽었다는 정보를 담은 쿠키를 전송
+//            Cookie cookie = new Cookie("read_board_" + bno, "true");
+//            cookie.setMaxAge(60 * 60 * 24); // 24시간 동안 유지되는 쿠키
+//            response.addCookie(cookie);
+//        }
+//
+//        BoardRepository boardRepository = null;
+//        if ("FREE".equals(boardType)) {
+//            boardRepository = freerepository;
+//        } else if ("NOTICE".equals(boardType)) {
+//            boardRepository = noticerepository;
+//        } else if ("REPORT".equals(boardType)) {
+//            boardRepository = reportrepository;
+//        }
+//        String writer = boardRepository.getWriterOfBoard(bno);
+//        Long secret = boardRepository.getSecretOfBoard(bno);
+//
+//        // 현재 사용자가 로그인한 경우에만 가져오도록
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User currentUser = null;
+//        if (authentication != null && authentication.getPrincipal() instanceof User) {
+//            currentUser = (User) authentication.getPrincipal();
+//        }
+//        if (currentUser == null) {  //로그인 안한 경우
+//            if (0L == secret) {
+//                BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열 enum으로
+//                Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
+//                return ResponseEntity.ok(boardWithImages);
+//            } else {
+//
+//                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to read this board.");
+//            }
+//        } else {
+//            if (1L == secret && currentUser.getUsername().equals(writer) || currentUser.getUsername().equals("darkest0722@gmail.com")) {
+//                BoardType enumBoardType = BoardType.valueOf(boardType); // 문자열 enum으로
+//                Board_File_DTO boardWithImages = boardControllerService.getBoardWithImages(enumBoardType, bno);
+//                return ResponseEntity.ok(boardWithImages);
+//            } else {
+//                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to read this board.");
+//            }
+//        }
+//    }
+
+
+
+
+
+
+
+
+
+    //with images
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/modify/{boardType}/{bno}") // 수정 api
@@ -194,40 +273,20 @@ public class BoardS3Controller {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to delete this board.");
         }
     }
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-//    @PutMapping("/modify/bank/{boardType}/{bno}") // 수정 api -> http://localhost:8080/api/boards/modify/free/1
-//    public ResponseEntity<String> modifyBoard(@PathVariable String boardType,
-//                                              @PathVariable Long bno,
-//                                              @RequestBody @Valid BankBoardDTO boardDTO,
-//                                              BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            List<String> errors = bindingResult.getAllErrors().stream()
-//                    .map(ObjectError::getDefaultMessage)
-//                    .collect(Collectors.toList());
-//            return ResponseEntity.badRequest().body(errors.toString());
-//        }
-//
-//        boardDTO.setBno(bno);
-//        bankBoardService.modify(boardDTO);
-//
-//        return ResponseEntity.ok("Board modified successfully.");
-//    }
-
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/register")
-    public ResponseEntity<Long> registerBoard(@RequestBody BoardDTO boardDTO) {
+    public ResponseEntity<?> registerBoard(@RequestBody BoardDTO boardDTO) {
         BoardType boardType = boardDTO.getBoardType();
+
+        // BoardType이 NOTICE이고 현재 사용자가 관리자가 아니면 권한 없음 응답
+        if (boardType == BoardType.NOTICE && !SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permission to register on NOTICE board.");
+        }
+
+
         Long bno = boardControllerService.registerBoard(boardType, boardDTO);
         return ResponseEntity.ok(bno);
     }
-
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-//    @PostMapping("/register/bank")
-//    public ResponseEntity<Long> registerBankBoard(@RequestBody BankBoardDTO bankBoardDTO) {
-//        BoardType boardType = bankBoardDTO.getBoardType();
-//        Long bno = boardControllerService.registerBankBoard(boardType, bankBoardDTO);
-//        return ResponseEntity.ok(bno);
-//    }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/remove/{boardType}/{bno}")
@@ -309,6 +368,7 @@ public class BoardS3Controller {
             }
 
             fileService.save(fileEntity);
+            fileResponseDto.setId(fileEntity.getId());
 
             // FileResponseDto에 boardType과 bno 값을 설정하여 반환
             fileResponseDto.setBoardType(boardType);
@@ -360,9 +420,12 @@ public class BoardS3Controller {
 
             fileEntity.setFileName(newFileResponseDto.getFileName());
             fileEntity.setS3Url(newFileResponseDto.getUrl());
+            fileEntity.setUuid(newFileResponseDto.getUuid());
 
             newFileResponseDto.setBoardType(boardType);
             newFileResponseDto.setBno(bno);
+            newFileResponseDto.setId(id);
+
 
             fileService.save(fileEntity);
 

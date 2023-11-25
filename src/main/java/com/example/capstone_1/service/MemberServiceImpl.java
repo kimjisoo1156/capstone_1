@@ -3,7 +3,6 @@ package com.example.capstone_1.service;
 import com.example.capstone_1.domain.*;
 import com.example.capstone_1.dto.DetailedMemberResponseDto;
 import com.example.capstone_1.dto.MemberRequestDto;
-import com.example.capstone_1.dto.MemberResponseDto;
 import com.example.capstone_1.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class MemberServiceImpl implements MemberService{
 
     @Autowired
     private MemberRepository memberRepository;
@@ -29,9 +28,6 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private ReportBoardRepository reportBoardRepository;
 
-//    @Autowired
-//    private BankBoardRepository bankBoardRepository;
-
 
     @Autowired
     private FreeReplyRepository freeReplyRepository;
@@ -41,9 +37,6 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private ReportReplyRepository reportReplyRepository;
-
-//    @Autowired
-//    private BankReplyRepository bankReplyRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -62,10 +55,20 @@ public class UserServiceImpl implements UserService{
         // 이메일을 기반으로 회원을 찾아 새로운 비밀번호로 업데이트합니다.
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("해당 이메일을 찾을 수 없습니다."));
-        member.setPassword(newPassword);
+
+        if (!isValidPassword(newPassword)) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        member.setPassword(encodedPassword);
+
         memberRepository.save(member);
     }
-
+    private boolean isValidPassword(String password) {
+        // 비밀번호 유효성 검사 로직
+        return password.matches("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$");
+       // return password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()-_+=]).{8,}$");
+    }
     @Override
     public DetailedMemberResponseDto getMemberByEmail(String email) {
         Member member = memberRepository.findByEmail(email)
@@ -88,9 +91,6 @@ public class UserServiceImpl implements UserService{
         // 폰 넘버, 이름, 은행, 계좌 정보 변경
         member.setPhoneNumber(memberRequestDto.getPhoneNumber());
         member.setName(memberRequestDto.getName());
-//        member.setBankName(memberRequestDto.getBankName());
-//        member.setAccount(memberRequestDto.getAccount());
-
 
         memberRepository.save(member);
     }
@@ -111,10 +111,6 @@ public class UserServiceImpl implements UserService{
         for (NoticeBoard board : boards_Notice) {
             board.setWriterToUnknown();
         }
-//        List<BankBoard> boards_Bank = bankBoardRepository.findByWriter(email);
-//        for (BankBoard board : boards_Bank) {
-//            board.setWriterToUnknown();
-//        }
         List<ReportBoard> boards_Report = reportBoardRepository.findByWriter(email);
         for (ReportBoard board : boards_Report) {
             board.setWriterToUnknown();
@@ -129,10 +125,6 @@ public class UserServiceImpl implements UserService{
         for (NoticeReply reply : replies_Notice) {
             reply.setReplyerToUnknown();
         }
-//        List<BankReply> replies_Bank = bankReplyRepository.findByReplyer(email);
-//        for (BankReply reply : replies_Bank) {
-//            reply.setReplyerToUnknown();
-//        }
         List<ReportReply> replies_Report = reportReplyRepository.findByReplyer(email);
         for (ReportReply reply : replies_Report) {
             reply.setReplyerToUnknown();
@@ -144,9 +136,6 @@ public class UserServiceImpl implements UserService{
 
         noticeBoardRepository.saveAll(boards_Notice);
         noticeReplyRepository.saveAll(replies_Notice);
-
-//        bankBoardRepository.saveAll(boards_Bank);
-//        bankReplyRepository.saveAll(replies_Bank);
 
         reportBoardRepository.saveAll(boards_Report);
         reportReplyRepository.saveAll(replies_Report);

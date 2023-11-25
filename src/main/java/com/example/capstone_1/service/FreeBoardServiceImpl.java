@@ -28,13 +28,12 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
 
     private final ModelMapper modelMapper;
     private final FreeBoardRepository freeBoardRepository;
-
-    private final UserService userService;
+    private final MemberService memberService;
     private final FileService fileService;
 
     @Override
     public Long register(BoardDTO boardDTO) {
-        String loggedInUserEmail = userService.getLoggedInUserEmail();
+        String loggedInUserEmail = memberService.getLoggedInUserEmail();
         boardDTO.setWriter(loggedInUserEmail);
         FreeBoard board = dtoToEntityFreeBoard(boardDTO);
 
@@ -59,7 +58,12 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
         // 게시물 조회
         Optional<FreeBoard> result = freeBoardRepository.findById(bno);
         FreeBoard board = result.orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + bno));
+//
+//        // 조회수 업데이트
+//        updateViewCount(bno);
+
         Board_File_DTO boardWithImages = modelMapper.map(board, Board_File_DTO.class);
+
 
         // 이미지 조회
         List<FileEntity> imageEntities = fileService.getImagesForBoard(boardtype, bno);
@@ -70,21 +74,15 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
 
         return boardWithImages;
     }
-
-
-
-//    @Override
-//    public void modify(BoardDTO boardDTO) {
-//        if (boardDTO.getBoardType() == BoardType.FREE) {
-//            Optional<FreeBoard> result = freeBoardRepository.findById(boardDTO.getBno());
+//    @Transactional
+//    public void updateViewCount(Long bno) {
+//        FreeBoard board = freeBoardRepository.findById(bno)
+//                .orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + bno));
 //
-//            FreeBoard board = result.orElseThrow();
-//
-//            board.changeFreeBoard(boardDTO.getTitle(), boardDTO.getContent());
-//
-//            freeBoardRepository.save(board);
-//        }
+//        board.increaseViewCount();
+//        freeBoardRepository.save(board);
 //    }
+
 
     @Override
     public void remove(Long bno) {
@@ -127,7 +125,7 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
         List<BoardListReplyCountDTO> dtos = result.getContent();
         for (BoardListReplyCountDTO dto : dtos) {
             // 데이터베이스에서 secret 값을 가져오는 메서드를 호출하여 설정
-            String secret = getSecretValue(dto.getBno());
+            Long secret = getSecretValue(dto.getBno());
             dto.setSecret(secret);
         }
 
@@ -137,7 +135,7 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
                 .total((int) result.getTotalElements())
                 .build();
     }
-    private String getSecretValue(Long bno) {
+    private Long getSecretValue(Long bno) {
         // 예시로 Spring Data JPA를 사용하여 데이터베이스에서 secret 값을 가져오는 로직을 구현
         Optional<FreeBoard> result = freeBoardRepository.findById(bno); // yourRepository는 해당 엔티티의 레포지토리입니다.
 
@@ -145,7 +143,7 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
             FreeBoard entity = result.get();
             return entity.getSecret(); // 예시로 YourEntity 클래스의 getSecret() 메서드를 호출하여 secret 값을 가져옴
         } else {
-            return ""; // 해당 bno에 해당하는 데이터가 없는 경우 빈 문자열을 반환하거나 적절한 방식으로 처리
+            return null; // 해당 bno에 해당하는 데이터가 없는 경우 빈 문자열을 반환하거나 적절한 방식으로 처리
         }
     }
 
@@ -156,7 +154,7 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
 
     @Override
     public void modify(FreeBoard freeBoard, BoardDTO boardDTO) {
-        freeBoard.changeFreeBoard(boardDTO.getTitle(), boardDTO.getContent());
+        freeBoard.changeFreeBoard(boardDTO.getTitle(), boardDTO.getContent(), boardDTO.getSecret());
         freeBoardRepository.save(freeBoard);
     }
 
@@ -171,7 +169,7 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
     }
 
     @Override
-    public String getSecretOfBoard(Long bno) {
+    public Long getSecretOfBoard(Long bno) {
         FreeBoard board = freeBoardRepository.findById(bno).orElse(null);
         if (board != null) {
             return board.getSecret();

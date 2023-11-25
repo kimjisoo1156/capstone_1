@@ -2,7 +2,6 @@ package com.example.capstone_1.service;
 
 import com.example.capstone_1.domain.BoardType;
 import com.example.capstone_1.domain.FileEntity;
-import com.example.capstone_1.domain.FreeBoard;
 import com.example.capstone_1.domain.NoticeBoard;
 import com.example.capstone_1.dto.*;
 import com.example.capstone_1.repository.BoardRepository;
@@ -29,11 +28,11 @@ public class NoticeBoardServiceImpl implements NoticeBoardService, BoardReposito
 
     private final ModelMapper modelMapper;
     private final NoticeBoardRepository noticeBoardRepository;
-    private final UserService userService;
+    private final MemberService memberService;
     private final FileService fileService;
     @Override
     public Long register(BoardDTO boardDTO) {
-        String loggedInUserEmail = userService.getLoggedInUserEmail();
+        String loggedInUserEmail = memberService.getLoggedInUserEmail();
         boardDTO.setWriter(loggedInUserEmail);
         NoticeBoard board = dtoToEntityNoticeBoard(boardDTO);
 
@@ -121,7 +120,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService, BoardReposito
         List<BoardListReplyCountDTO> dtos = result.getContent();
         for (BoardListReplyCountDTO dto : dtos) {
             // 데이터베이스에서 secret 값을 가져오는 메서드를 호출하여 설정
-            String secret = getSecretValue(dto.getBno());
+            Long secret = getSecretValue(dto.getBno());
             dto.setSecret(secret);
         }
 
@@ -131,7 +130,9 @@ public class NoticeBoardServiceImpl implements NoticeBoardService, BoardReposito
                 .total((int)result.getTotalElements())
                 .build();
     }
-    private String getSecretValue(Long bno) {
+
+
+    private Long getSecretValue(Long bno) {
         // 예시로 Spring Data JPA를 사용하여 데이터베이스에서 secret 값을 가져오는 로직을 구현
         Optional<NoticeBoard> result = noticeBoardRepository.findById(bno); // yourRepository는 해당 엔티티의 레포지토리입니다.
 
@@ -139,13 +140,13 @@ public class NoticeBoardServiceImpl implements NoticeBoardService, BoardReposito
             NoticeBoard entity = result.get();
             return entity.getSecret(); // 예시로 YourEntity 클래스의 getSecret() 메서드를 호출하여 secret 값을 가져옴
         } else {
-            return ""; // 해당 bno에 해당하는 데이터가 없는 경우 빈 문자열을 반환하거나 적절한 방식으로 처리
+            return null; // 해당 bno에 해당하는 데이터가 없는 경우 빈 문자열을 반환하거나 적절한 방식으로 처리
         }
     }
 
     @Override
     public void modify(NoticeBoard noticeBoard, BoardDTO boardDTO) {
-        noticeBoard.changeNoticeBoard(boardDTO.getTitle(), boardDTO.getContent());
+        noticeBoard.changeNoticeBoard(boardDTO.getTitle(), boardDTO.getContent(),boardDTO.getSecret());
         noticeBoardRepository.save(noticeBoard);
     }
 
@@ -165,7 +166,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService, BoardReposito
     }
 
     @Override
-    public String getSecretOfBoard(Long bno) {
+    public Long getSecretOfBoard(Long bno) {
         NoticeBoard board = noticeBoardRepository.findById(bno).orElse(null);
         if (board != null) {
             return board.getSecret();

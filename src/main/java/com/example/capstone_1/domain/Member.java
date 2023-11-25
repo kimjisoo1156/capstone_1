@@ -25,11 +25,7 @@ public class Member {
 
     private String name;
 
-//    private String bankName;
-//
-//    private String account;
-
-    private Boolean download;
+   // private Boolean download;
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
@@ -41,8 +37,6 @@ public class Member {
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.name = name;
-//        this.bankName = bankName;
-//        this.account = account;
         this.authority = authority;
     }
 

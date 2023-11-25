@@ -35,6 +35,5 @@ public class Board_File_DTO {
     //첨부파일의 이름들
     private List<String> fileNames;
 
-    private String secret;
-
+    private Long secret;
 }

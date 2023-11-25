@@ -31,10 +31,11 @@ public class ReportBoard extends BaseEntity{
     @OneToMany(mappedBy = "reportBoard", cascade = CascadeType.ALL)
     private List<FileEntity> files;
 
-    private String secret;
-    public void changeReportBoard(String title, String content){
+    private Long secret;
+    public void changeReportBoard(String title, String content, Long secret){
         this.title = title;
         this.content = content;
+        this.secret = secret;
     }
     public void setWriterToUnknown() {
         this.writer = "알수없음";

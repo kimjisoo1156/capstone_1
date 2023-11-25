@@ -1,6 +1,5 @@
 package com.example.capstone_1.service;
 
-import com.example.capstone_1.domain.FreeReply;
 import com.example.capstone_1.domain.ReportReply;
 import com.example.capstone_1.dto.PageRequestDTO;
 import com.example.capstone_1.dto.PageResponseDTO;
@@ -29,11 +28,11 @@ public class ReportReplyServiceImpl implements ReplyService, ReplyRepository {
     private final ReportReplyRepository reportReplyRepository;
 
     private final ModelMapper modelMapper;
-    private final UserService userService;
+    private final MemberService memberService;
 
     @Override
     public Long register(ReplyDTO replyDTO) {
-        String loggedInUserEmail = userService.getLoggedInUserEmail();
+        String loggedInUserEmail = memberService.getLoggedInUserEmail();
         replyDTO.setReplyer(loggedInUserEmail); //댓글 작성자를 로그인한 회원의 이메일로
 
         ReportReply reply = modelMapper.map(replyDTO, ReportReply.class);

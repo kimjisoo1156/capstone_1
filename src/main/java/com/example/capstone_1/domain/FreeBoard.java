@@ -31,14 +31,32 @@ public class FreeBoard extends BaseEntity{  //자유게시판
     @OneToMany(mappedBy = "freeBoard", cascade = CascadeType.ALL)
     private List<FileEntity> files;
 
-    private String secret;
-    public void changeFreeBoard(String title, String content){
+    private Long secret;
+
+//    @Column(columnDefinition = "int default 0", nullable = false)	// 조회수의 기본 값을 0으로 지정, null 불가 처리
+//    private int viewCount;
+
+    public void changeFreeBoard(String title, String content, Long secret){
         this.title = title;
         this.content = content;
+        this.secret = secret;
     }
 
     // 작성자를 알 수 없음으로 변경하는 메서드
     public void setWriterToUnknown() {
         this.writer = "알수없음";
     }
+//    public void setViewCount(Integer viewCount) {
+//        if (viewCount != null) {
+//            this.viewCount = viewCount;
+//        } else {
+//            // 기본값이나 다른 적절한 값으로 처리
+//            this.viewCount = 0;
+//        }
+//    }
+//
+//    public void increaseViewCount() {
+//        this.viewCount++;
+//    }
+
 }

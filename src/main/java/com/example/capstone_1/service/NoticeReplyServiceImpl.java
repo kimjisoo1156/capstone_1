@@ -1,6 +1,5 @@
 package com.example.capstone_1.service;
 
-import com.example.capstone_1.domain.FreeReply;
 import com.example.capstone_1.domain.NoticeReply;
 import com.example.capstone_1.dto.PageRequestDTO;
 import com.example.capstone_1.dto.PageResponseDTO;
@@ -28,11 +27,11 @@ public class NoticeReplyServiceImpl implements ReplyService, ReplyRepository {
     private final NoticeReplyRepository noticeReplyRepository;
 
     private final ModelMapper modelMapper;
-    private final UserService userService;
+    private final MemberService memberService;
 
     @Override
     public Long register(ReplyDTO replyDTO) {
-        String loggedInUserEmail = userService.getLoggedInUserEmail();
+        String loggedInUserEmail = memberService.getLoggedInUserEmail();
         replyDTO.setReplyer(loggedInUserEmail);
         NoticeReply reply = modelMapper.map(replyDTO, NoticeReply.class);
 

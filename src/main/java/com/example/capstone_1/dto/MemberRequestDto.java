@@ -17,7 +17,6 @@ public class MemberRequestDto { //회원가입할때 필요한 필드들,
     private String phoneNumber;
     private String name;
 
-
     public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .email(email)

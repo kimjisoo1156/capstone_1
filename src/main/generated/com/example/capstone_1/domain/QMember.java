@@ -21,8 +21,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<Authority> authority = createEnum("authority", Authority.class);
 
-    public final BooleanPath download = createBoolean("download");
-
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

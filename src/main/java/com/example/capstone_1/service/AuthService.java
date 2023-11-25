@@ -6,9 +6,11 @@ import com.example.capstone_1.dto.*;
 import com.example.capstone_1.jwt.TokenProvider;
 import com.example.capstone_1.repository.MemberRepository;
 import com.example.capstone_1.repository.RefreshTokenRepository;
+import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.internal.util.Members;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -21,12 +23,14 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
     //@Transactional
     public MemberResponseDto signup(MemberRequestDto memberRequestDto) {
+
         if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
            throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
@@ -34,6 +38,42 @@ public class AuthService {
         Member member = memberRequestDto.toMember(passwordEncoder);
         return MemberResponseDto.of(memberRepository.save(member));
     }
+
+
+    public void validateSignUpRequest(MemberRequestDto memberRequestDto) {
+        // 간단한 유효성 검사 예시
+        if (!isValidEmail(memberRequestDto.getEmail())) {
+            throw new IllegalArgumentException("Invalid email address");
+        }
+
+        if (!isValidPassword(memberRequestDto.getPassword())) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+
+        if (!isValidPhoneNumber(memberRequestDto.getPhoneNumber())) {
+            throw new IllegalArgumentException("전화번호 형식은");
+        }
+    }
+
+    // 실제 회원가입 로직
+    private boolean isValidEmail(String email) {
+        // 이메일 유효성 검사 로직
+        return email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$");
+    }
+
+    private boolean isValidPassword(String password) {
+        // 비밀번호 유효성 검사 로직
+        return password.matches("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$");
+       // return password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()-_+=]).{8,}$");
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        // 전화번호 유효성 검사 로직
+        return phoneNumber.matches("^010-[0-9]{4}-[0-9]{4}$");
+    }
+
+
+
     public class CustomAuthenticationException extends AuthenticationException {
         public CustomAuthenticationException(String message) {
             super(message);
@@ -126,18 +166,11 @@ public class AuthService {
         // 토큰 발급
         return tokenDto;
     }
-    // 비밀번호 재설정을 위한 메서드 추가
+
+    // 이메일로 비밀번호 새로 발급해줄때
     @Transactional
     public void SetTempPassword(String email, String newPassword) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("해당 이메일을 찾을 수 없습니다."));
-
-        // 임시 비밀번호를 인코딩하여 저장
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        member.setPassword(encodedPassword);
-
-        // 회원 정보 저장
-        memberRepository.save(member);
+        memberService.updatePassword(email, newPassword);
     }
 
 

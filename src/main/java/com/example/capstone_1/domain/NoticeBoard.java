@@ -31,10 +31,11 @@ public class NoticeBoard extends BaseEntity{
     @OneToMany(mappedBy = "noticeBoard", cascade = CascadeType.ALL)
     private List<FileEntity> files;
 
-    private String secret; //
-    public void changeNoticeBoard(String title, String content){
+    private Long secret;
+    public void changeNoticeBoard(String title, String content, Long secret){
         this.title = title;
         this.content = content;
+        this.secret = secret;
     }
 
     public void setWriterToUnknown() {
