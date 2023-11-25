@@ -161,9 +161,6 @@ public class BoardS3Controller {
         }
 
     }
-
-
-
 //    @GetMapping("/{boardType}/{bno}/withImages")
 //    public ResponseEntity<?> getBoardWithImages(
 //            @PathVariable String boardType,
@@ -230,14 +227,6 @@ public class BoardS3Controller {
 //            }
 //        }
 //    }
-
-
-
-
-
-
-
-
 
     //with images
 
