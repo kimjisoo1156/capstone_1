@@ -72,6 +72,10 @@ public class FreeBoardServiceImpl implements FreeBoardService, BoardRepository {
         List<String> imageUrls = imageEntities.stream().map(FileEntity::getS3Url).collect(Collectors.toList());
         boardWithImages.setFileNames(imageUrls);
 
+        // 이미지 파일의 ID 추가
+        List<Long> imageIds = imageEntities.stream().map(FileEntity::getId).collect(Collectors.toList());
+        boardWithImages.setImageIds(imageIds);
+
         return boardWithImages;
     }
 //    @Transactional

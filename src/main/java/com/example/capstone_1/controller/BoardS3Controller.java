@@ -411,6 +411,7 @@ public class BoardS3Controller {
             fileEntity.setS3Url(newFileResponseDto.getUrl());
             fileEntity.setUuid(newFileResponseDto.getUuid());
 
+
             newFileResponseDto.setBoardType(boardType);
             newFileResponseDto.setBno(bno);
             newFileResponseDto.setId(id);

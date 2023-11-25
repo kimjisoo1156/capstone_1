@@ -42,6 +42,7 @@ public class FileEntity {
     public FileEntity(String fileName, String uuid, String s3Url, BoardType boardType,
                       FreeBoard freeBoard, NoticeBoard noticeBoard,
                       ReportBoard reportBoard) {
+
         this.fileName = fileName;
         this.uuid = uuid;
         this.s3Url = s3Url;

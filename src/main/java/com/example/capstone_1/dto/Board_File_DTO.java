@@ -1,6 +1,5 @@
 package com.example.capstone_1.dto;
 
-import com.example.capstone_1.domain.BoardType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -16,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Board_File_DTO {
+    private List<Long> imageIds;
 
     private Long bno;
 
