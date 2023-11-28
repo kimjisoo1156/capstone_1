@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -22,7 +23,8 @@ public class EmailService {
 
     private final AuthService authService;
 
-    public String sendMail(EmailMessage emailMessage, String type) {
+    @Async
+    public void sendMail(EmailMessage emailMessage, String type) {
         String authNum = createCode();
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -38,7 +40,7 @@ public class EmailService {
 
             log.info("Success");
 
-            return authNum;
+            ///return authNum;
 
         } catch (MessagingException e) {
             log.info("fail");

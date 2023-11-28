@@ -87,8 +87,6 @@ public class MemberServiceImpl implements MemberService{
             String encodedPassword = passwordEncoder.encode(memberRequestDto.getPassword());
             member.setPassword(encodedPassword);
         }
-
-        // 폰 넘버, 이름, 은행, 계좌 정보 변경
         member.setPhoneNumber(memberRequestDto.getPhoneNumber());
         member.setName(memberRequestDto.getName());
 
