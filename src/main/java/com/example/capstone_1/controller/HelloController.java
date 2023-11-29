@@ -25,6 +25,6 @@ public class HelloController {
     }
     @GetMapping("/hello5")
     public String hello5(){
-        return "서버가혹시?";
+        return "테스트";
     }
 }
