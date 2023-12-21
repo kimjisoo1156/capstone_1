@@ -30,24 +30,16 @@
 - 비밀번호 찾기 기능
 - 다운로드 기능
 - 내 정보 수정
-- 회원 탈퇴 기능
+- 회원 탈퇴 기능 
 
 #### 메인 화면
 <img src="https://github.com/kimjisoo1156/capstone_1/assets/121778107/04e9a05f-68a0-4ae3-917c-7e6b6f472b94">
 
-###### 게시판 이미지 업로드시 화면
-<img width="701" alt="KakaoTalk_Photo_2023-11-03-13-46-31" src="https://github.com/kimjisoo1156/capstone_1/assets/121778107/cc5f8aaa-ec3f-4a5f-8322-e03379d7a83c">
-
-###### 검색 시
-![KakaoTalk_Photo_2023-11-03-13-47-14](https://github.com/kimjisoo1156/capstone_1/assets/121778107/6f86fd31-57c8-4d56-9611-861e61bd9f2a)
-![검색 기능](https://github.com/VaIice/Capstone/assets/141003473/1c873342-e3ca-4b9d-9b35-5f9340cacca7)
-
-###### 게시글 삭제 시
-![KakaoTalk_Photo_2023-11-03-13-47-38](https://github.com/kimjisoo1156/capstone_1/assets/121778107/21ca0ec5-3eaf-440f-8b13-4ab01dca3f6c)
-
 ###### 웹시연_1
 <img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/0adb7750-a125-4883-a891-07824174c5dc">
 
+###### 웹시연_2
+<img src = "[https://github.com/kimjisoo1156/capstone_1/assets/121778107/0adb7750-a125-4883-a891-07824174c5dc](https://github.com/kimjisoo1156/capstone_1/assets/121778107/e0aacae1-0778-4932-9378-06696efe7b40)">
 ---
 ## 👥팀 소개
 #### 🎮 유니티
