@@ -39,7 +39,7 @@
 <img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/0adb7750-a125-4883-a891-07824174c5dc">
 
 ###### 웹시연_2
-<img src = "[https://github.com/kimjisoo1156/capstone_1/assets/121778107/0adb7750-a125-4883-a891-07824174c5dc](https://github.com/kimjisoo1156/capstone_1/assets/121778107/e0aacae1-0778-4932-9378-06696efe7b40)">
+<img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/e0aacae1-0778-4932-9378-06696efe7b40">
 ---
 ## 👥팀 소개
 #### 🎮 유니티
