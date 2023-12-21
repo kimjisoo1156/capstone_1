@@ -1,10 +1,11 @@
 # 23-2학기 capstone 1조
 # 주제 : VR, 인공지능을 활용한 던전 RPG 제작 및 웹 서비스 제공
-# 해당 프로젝트는 R&D에 프로그램 등록까지 되었습니다.
+
 
 ## 🌏Darkest Planet
 ##### <http://d10v0gqnjifjsl.cloudfront.net> <- 웹사이트 주소
 ##### https://www.youtube.com/watch?v=yHFZAzzTs5Q&t=123s <- 시연영상 (VR rpg게임 및 웹서비스)
+##### 해당 프로젝트는 국가 R&D에 프로그램 등록까지 되었습니다. 등록번호 C-2023-060485
 
 ## 유니티 주요 기능
 - 적 인공지능(회피,탐지,도망,추적)
