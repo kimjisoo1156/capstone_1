@@ -35,6 +35,19 @@
 #### 메인 화면
 <img src="https://github.com/kimjisoo1156/capstone_1/assets/121778107/ac1093bd-91dc-40e3-88e9-6a29c465af08">
 
+#### 검색 기능
+<img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/171f3423-4b09-4535-bb6a-bad756ba2799">
+
+#### 비밀번호 찾기 기능
+<img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/7c3401c9-08cf-47a5-9dfd-7f5231948bbc">
+
+#### 로그인 연장
+<img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/951b1e99-97e9-4aee-8448-cc4d77ef4e8c">
+
+#### 로그인 연장 x
+<img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/a1a2a8d3-4251-4d89-9571-d25c6e11de02">
+
+
 ###### 웹시연_1
 <img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/0adb7750-a125-4883-a891-07824174c5dc">
 
