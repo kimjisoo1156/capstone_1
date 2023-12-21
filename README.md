@@ -33,7 +33,7 @@
 - 회원 탈퇴 기능 
 
 #### 메인 화면
-<img src="https://github.com/kimjisoo1156/capstone_1/assets/121778107/04e9a05f-68a0-4ae3-917c-7e6b6f472b94">
+<img src="https://github.com/kimjisoo1156/capstone_1/assets/121778107/ac1093bd-91dc-40e3-88e9-6a29c465af08">
 
 ###### 웹시연_1
 <img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/0adb7750-a125-4883-a891-07824174c5dc">
