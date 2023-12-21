@@ -1,6 +1,4 @@
-# 23-2학기 capstone 1조
 # 주제 : VR, 인공지능을 활용한 던전 RPG 제작 및 웹 서비스 제공
-
 
 ## 🌏Darkest Planet
 ##### <http://d10v0gqnjifjsl.cloudfront.net> <- 웹사이트 주소
