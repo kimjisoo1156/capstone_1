@@ -45,6 +45,9 @@
 ###### 게시글 삭제 시
 ![KakaoTalk_Photo_2023-11-03-13-47-38](https://github.com/kimjisoo1156/capstone_1/assets/121778107/21ca0ec5-3eaf-440f-8b13-4ab01dca3f6c)
 
+###### 웹시연_1
+https://github.com/kimjisoo1156/capstone_1/assets/121778107/0adb7750-a125-4883-a891-07824174c5dc
+
 ---
 ## 👥팀 소개
 #### 🎮 유니티
