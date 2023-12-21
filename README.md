@@ -31,6 +31,9 @@
 - 내 정보 수정
 - 회원 탈퇴 기능 
 
+#### 시스템 구조
+<img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/bed2c9fa-1dd2-4d7a-93fc-5e8098bc168b">
+
 #### 메인 화면
 <img src="https://github.com/kimjisoo1156/capstone_1/assets/121778107/ac1093bd-91dc-40e3-88e9-6a29c465af08">
 
