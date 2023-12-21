@@ -33,7 +33,7 @@
 - 회원 탈퇴 기능
 
 #### 메인 화면
-<img width="905" src="[https://github.com/kimjisoo1156/capstone_1/assets/121778107/8718db2e-ce3e-4bcc-9b53-ca8a6bec83e2](https://github.com/kimjisoo1156/capstone_1/assets/121778107/04e9a05f-68a0-4ae3-917c-7e6b6f472b94)">
+<img src="https://github.com/kimjisoo1156/capstone_1/assets/121778107/04e9a05f-68a0-4ae3-917c-7e6b6f472b94">
 
 ###### 게시판 이미지 업로드시 화면
 <img width="701" alt="KakaoTalk_Photo_2023-11-03-13-46-31" src="https://github.com/kimjisoo1156/capstone_1/assets/121778107/cc5f8aaa-ec3f-4a5f-8322-e03379d7a83c">
@@ -46,7 +46,7 @@
 ![KakaoTalk_Photo_2023-11-03-13-47-38](https://github.com/kimjisoo1156/capstone_1/assets/121778107/21ca0ec5-3eaf-440f-8b13-4ab01dca3f6c)
 
 ###### 웹시연_1
-https://github.com/kimjisoo1156/capstone_1/assets/121778107/0adb7750-a125-4883-a891-07824174c5dc
+<img src = "https://github.com/kimjisoo1156/capstone_1/assets/121778107/0adb7750-a125-4883-a891-07824174c5dc">
 
 ---
 ## 👥팀 소개
