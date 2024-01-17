@@ -59,14 +59,34 @@
 ---
 ## 👥팀 소개
 #### 🎮 유니티
+|   Unity |
 | :------------: |
 | 팀장 : 문경필|
 |  ****1548 |
+| [![GitHub](https://img.shields.io/badge/-GitHub-black?style=flat-square&logo=github)](https://github.com/gpdev-Pilcothink) |
+
+🛠️ **Tools and Technologies :** <br><br>
+<img src="https://img.shields.io/badge/unity-000000?style=for-the-badge&logo=unity&logoColor=white">
+<img src="https://img.shields.io/badge/Visual Studio-5C2D91?style=for-the-badge&logo=visualstudio&logoColor=white">
+<img src="https://img.shields.io/badge/Visual Studio Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white">
+<img src="https://img.shields.io/badge/csharp-512BD4?style=for-the-badge&logo=csharp&logoColor=white">
+<img src="https://img.shields.io/badge/Oculus-1C1E20?style=for-the-badge&logo=oculus&logoColor=white">
+<img src="https://img.shields.io/badge/Android-34A853?style=for-the-badge&logo=android&logoColor=white">
 
 #### 🎮 유니티
+|   Unity |
 | :------------: |
-|  박승완|
+| 박승완|
 |  ****1552 |
+| [![GitHub](https://img.shields.io/badge/-GitHub-black?style=flat-square&logo=github)](https://github.com/KIKO5402) |
+
+🛠️ **Tools and Technologies :** <br><br>
+<img src="https://img.shields.io/badge/unity-000000?style=for-the-badge&logo=unity&logoColor=white">
+<img src="https://img.shields.io/badge/Visual Studio-5C2D91?style=for-the-badge&logo=visualstudio&logoColor=white">
+<img src="https://img.shields.io/badge/Visual Studio Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white">
+<img src="https://img.shields.io/badge/csharp-512BD4?style=for-the-badge&logo=csharp&logoColor=white">
+<img src="https://img.shields.io/badge/Oculus-1C1E20?style=for-the-badge&logo=oculus&logoColor=white">
+<img src="https://img.shields.io/badge/Android-34A853?style=for-the-badge&logo=android&logoColor=white">
 
 #### 🖥BackEnd
 |   BackEnd |
