@@ -1,7 +1,8 @@
 # 주제 : VR, 인공지능을 활용한 던전 RPG 제작 및 웹 서비스 제공
 
 ## 🌏Darkest Planet
-##### <http://d10v0gqnjifjsl.cloudfront.net> <- 웹사이트 주소
+##### <http://d10v0gqnjifjsl.cloudfront.net> <- 웹사이트 주소 
+(이미지 용량으로 인하여, AWS 비용이 발생하여 백엔드 서버를 내렸습니다. 접속시 프론트 부분만 확인 가능합니다)
 ##### https://www.youtube.com/watch?v=yHFZAzzTs5Q&t=123s <- 시연영상 (VR rpg게임 및 웹서비스)
 ##### 해당 프로젝트는 국가 R&D에 프로그램 등록 승인까지 완료 되었습니다. 등록번호 C-2023-060485
 
